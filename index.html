@@ -1,0 +1,1070 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Saisonabschluss-Olympiade Scoreboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@400;500;600;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f4f7ef;
+    --surface: #ffffff;
+    --surface-2: #eaf0e1;
+    --text: #1b2417;
+    --text-muted: #5c6b54;
+    --border: #d9e1cf;
+    --accent: #6ba50f;
+    --accent-ink: #22320a;
+    --accent-soft: #e3f0d2;
+    --clay: #b8552e;
+    --clay-soft: #f3ded3;
+    --gold: #ad8a1f;
+    --silver: #7c8790;
+    --bronze: #a05a26;
+    --shadow: rgba(27, 36, 23, 0.10);
+    --danger: #b8552e;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #10150c;
+      --surface: #171f13;
+      --surface-2: #202b19;
+      --text: #eaf1e1;
+      --text-muted: #9db28d;
+      --border: #2a3722;
+      --accent: #a8e13c;
+      --accent-ink: #16210a;
+      --accent-soft: #263a15;
+      --clay: #e0794c;
+      --clay-soft: #3a2418;
+      --gold: #e0c04a;
+      --silver: #b7c2ca;
+      --bronze: #d98a4a;
+      --shadow: rgba(0, 0, 0, 0.45);
+      --danger: #e0794c;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #10150c;
+    --surface: #171f13;
+    --surface-2: #202b19;
+    --text: #eaf1e1;
+    --text-muted: #9db28d;
+    --border: #2a3722;
+    --accent: #a8e13c;
+    --accent-ink: #16210a;
+    --accent-soft: #263a15;
+    --clay: #e0794c;
+    --clay-soft: #3a2418;
+    --gold: #e0c04a;
+    --silver: #b7c2ca;
+    --bronze: #d98a4a;
+    --shadow: rgba(0, 0, 0, 0.45);
+    --danger: #e0794c;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Manrope", ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100dvh;
+    padding-bottom: 3rem;
+  }
+  h1, h2, h3 { font-family: "Anton", "Manrope", sans-serif; font-weight: 400; letter-spacing: 0.01em; text-wrap: balance; margin: 0; }
+  .mono { font-family: "JetBrains Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+  a { color: var(--accent-ink); }
+  :root[data-theme="dark"] a, :root:not([data-theme="light"]) a { color: var(--accent); }
+  button { font-family: inherit; }
+  input[type="text"], input[type="number"], input[type="search"], textarea {
+    font-family: inherit;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 0.6rem;
+    padding: 0.6rem 0.7rem;
+    color: var(--text);
+    font-size: 1rem;
+    width: 100%;
+  }
+  textarea { resize: vertical; font-size: 0.92rem; line-height: 1.4; }
+  input:focus-visible, button:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  header.top {
+    background: var(--accent-ink);
+    color: var(--accent-soft);
+    padding: 1.4rem 1.1rem 1.1rem;
+    position: relative;
+    overflow: hidden;
+  }
+  header.top::after {
+    content: "";
+    position: absolute;
+    right: -40px; top: -40px;
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, var(--accent) 0%, transparent 70%);
+    opacity: 0.35;
+  }
+  .top-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.9rem; position: relative; z-index: 1; }
+  .club-logo { flex: none; height: 56px; width: auto; margin-top: 0.15rem; }
+  header.top h1 { font-size: 1.9rem; color: #fff; }
+  header.top .sub { font-size: 0.92rem; color: rgba(255,255,255,0.78); margin-top: 0.25rem; }
+  header.top .event-meta { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.6rem; position: relative; z-index: 1; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 0.3rem;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.18);
+    color: rgba(255,255,255,0.92);
+    padding: 0.25rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+  }
+
+  nav.tabbar {
+    position: sticky; top: 0; z-index: 10;
+    display: flex;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 2px 10px var(--shadow);
+  }
+  nav.tabbar button {
+    flex: 1;
+    padding: 0.85rem 0.4rem;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.88rem;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+  }
+  nav.tabbar button.active {
+    color: var(--text);
+    border-bottom-color: var(--accent);
+  }
+
+  main { max-width: 720px; margin: 0 auto; padding: 1.1rem; }
+  .view { display: none; }
+  .view.active { display: block; }
+
+  .banner {
+    background: var(--clay-soft);
+    color: var(--clay);
+    border: 1px solid var(--clay);
+    border-radius: 0.7rem;
+    padding: 0.7rem 0.9rem;
+    font-size: 0.88rem;
+    margin-bottom: 1rem;
+    display: none;
+  }
+  .banner.show { display: block; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 0.9rem;
+    padding: 1rem;
+    margin-bottom: 0.9rem;
+    box-shadow: 0 1px 3px var(--shadow);
+  }
+  .card h2 { font-size: 1.05rem; margin-bottom: 0.7rem; }
+  .card h3 { font-size: 0.98rem; }
+  .muted { color: var(--text-muted); font-size: 0.85rem; }
+  .center { text-align: center; }
+
+  .lb-row {
+    display: flex; align-items: center; gap: 0.8rem;
+    padding: 0.7rem 0.2rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .lb-row:last-child { border-bottom: none; }
+  .rank-badge {
+    flex: none;
+    width: 2.3rem; height: 2.3rem;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: "Anton", sans-serif;
+    font-size: 1.05rem;
+    background: var(--surface-2);
+    color: var(--text-muted);
+    border: 2px solid var(--border);
+  }
+  .rank-badge.r1 { background: var(--gold); color: var(--accent-ink); border-color: var(--gold); }
+  .rank-badge.r2 { background: var(--silver); color: var(--accent-ink); border-color: var(--silver); }
+  .rank-badge.r3 { background: var(--bronze); color: #fff; border-color: var(--bronze); }
+  .lb-name { flex: 1; font-weight: 700; font-size: 1.02rem; }
+  .lb-total { font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 1.15rem; font-variant-numeric: tabular-nums; }
+  .lb-total .unit { font-size: 0.7rem; color: var(--text-muted); font-weight: 500; margin-left: 0.2rem; }
+
+  .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 0.7rem; }
+  table.matrix { border-collapse: collapse; width: 100%; font-size: 0.82rem; }
+  table.matrix th, table.matrix td {
+    padding: 0.5rem 0.6rem;
+    text-align: center;
+    white-space: nowrap;
+    border-bottom: 1px solid var(--border);
+  }
+  table.matrix th { background: var(--surface-2); font-weight: 700; text-align: left; }
+  table.matrix td:first-child, table.matrix th:first-child { text-align: left; font-weight: 600; position: sticky; left: 0; background: var(--surface); }
+  table.matrix th:first-child { background: var(--surface-2); }
+  table.matrix td.total-col, table.matrix th.total-col { font-weight: 800; font-family: "JetBrains Mono", monospace; }
+
+  details.explain summary {
+    cursor: pointer; font-weight: 700; font-size: 0.9rem; color: var(--accent-ink);
+    list-style: none;
+  }
+  :root[data-theme="dark"] details.explain summary,
+  :root:not([data-theme="light"]) details.explain summary { color: var(--accent); }
+  details.explain summary::-webkit-details-marker { display: none; }
+  details.explain summary::before { content: "▸ "; }
+  details.explain[open] summary::before { content: "▾ "; }
+  details.explain p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; margin: 0.6rem 0 0; }
+
+  .player-row, .game-setup-row {
+    display: flex; align-items: center; gap: 0.5rem;
+    padding: 0.5rem 0; border-bottom: 1px solid var(--border);
+  }
+  .player-row:last-of-type, .game-setup-row:last-of-type { border-bottom: none; }
+
+  .icon-btn {
+    flex: none; width: 2.2rem; height: 2.2rem;
+    border-radius: 0.5rem; border: 1px solid var(--border);
+    background: var(--surface); color: var(--danger);
+    cursor: pointer; font-size: 1rem; line-height: 1;
+  }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+    border-radius: 0.65rem;
+    padding: 0.65rem 1rem;
+    font-weight: 700;
+    font-size: 0.92rem;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+  }
+  .btn-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .btn-block { width: 100%; }
+  .btn:disabled { opacity: 0.6; cursor: default; }
+  .btn-pick { justify-content: flex-start; text-align: left; }
+
+  .game-setup-card { border: 1px solid var(--border); border-radius: 0.75rem; padding: 0.8rem; margin-bottom: 0.7rem; background: var(--surface-2); }
+  .field-grid { display: grid; grid-template-columns: 1fr; gap: 0.5rem; margin-top: 0.5rem; }
+  .field-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); margin-bottom: 0.2rem; display: block; }
+  .direction-toggle { display: flex; gap: 0.4rem; }
+  .direction-toggle button {
+    flex: 1; padding: 0.5rem; border-radius: 0.5rem; border: 1px solid var(--border);
+    background: var(--surface); color: var(--text-muted); font-size: 0.78rem; font-weight: 700; cursor: pointer;
+  }
+  .direction-toggle button.active { background: var(--accent-soft); border-color: var(--accent); color: var(--accent-ink); }
+  :root[data-theme="dark"] .direction-toggle button.active,
+  :root:not([data-theme="light"]) .direction-toggle button.active { color: var(--accent); }
+  .row-top { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+
+  .game-item { border: 1px solid var(--border); border-radius: 0.8rem; margin-bottom: 0.7rem; overflow: hidden; background: var(--surface); }
+  .game-item-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 0.6rem;
+    padding: 0.85rem 1rem; cursor: pointer; background: var(--surface);
+  }
+  .game-item-head h3 { font-size: 0.98rem; }
+  .game-item-head .status { font-size: 0.76rem; color: var(--text-muted); margin-top: 0.15rem; }
+  .status.complete { color: var(--accent-ink); font-weight: 700; }
+  :root[data-theme="dark"] .status.complete,
+  :root:not([data-theme="light"]) .status.complete { color: var(--accent); }
+  .chev { transition: transform 0.15s ease; color: var(--text-muted); flex: none; }
+  .game-item.open .chev { transform: rotate(90deg); }
+  .game-item-body { display: none; padding: 0 1rem 1rem; border-top: 1px solid var(--border); }
+  .game-item.open .game-item-body { display: block; }
+
+  .bulk-panel { background: var(--surface-2); border: 1px solid var(--border); border-radius: 0.6rem; padding: 0.7rem; margin: 0.8rem 0 0.4rem; }
+  .bulk-panel .bulk-row { display: flex; gap: 0.5rem; align-items: center; margin-top: 0.55rem; }
+  .bulk-panel .bulk-row input[type="number"] { width: 6.5rem; flex: none; }
+  .bulk-panel .bulk-row button { flex: 1; }
+  .bulk-hint { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.4rem; }
+
+  .entry-row { display: flex; align-items: center; gap: 0.6rem; padding: 0.55rem 0; border-bottom: 1px dashed var(--border); }
+  .entry-row:last-of-type { border-bottom: none; }
+  .entry-row input[type="checkbox"] { flex: none; width: 1.2rem; height: 1.2rem; accent-color: var(--accent); margin: 0; }
+  .entry-row .name { flex: 1; font-weight: 600; font-size: 0.92rem; }
+  .entry-row input[type="number"] { width: 6.5rem; text-align: right; flex: none; }
+  .entry-row .unit { width: 3.2rem; font-size: 0.76rem; color: var(--text-muted); }
+  .entry-row.selected { background: var(--accent-soft); border-radius: 0.5rem; padding-left: 0.4rem; padding-right: 0.4rem; margin: 0 -0.4rem; }
+
+  .whoami { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; }
+  .whoami .stat { text-align: right; }
+
+  footer.note { text-align: center; color: var(--text-muted); font-size: 0.78rem; padding: 1.4rem 1rem 0.4rem; }
+  .add-row { margin-top: 0.6rem; }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-row">
+    <div>
+      <h1 id="event-title-display">Saisonabschluss-Olympiade</h1>
+      <div class="sub" id="event-sub-display">Live-Scoreboard</div>
+      <div class="event-meta">
+        <span class="pill" id="event-date-pill">📅 Datum offen</span>
+        <span class="pill" id="event-players-pill">Spieler</span>
+        <span class="pill" id="event-games-pill">Spiele</span>
+      </div>
+    </div>
+    <img class="club-logo" src="/logo.png" alt="RTC Tennisclub Logo">
+  </div>
+</header>
+
+<div id="app-root"><main><p class="muted center" style="padding-top:2rem;">Lade …</p></main></div>
+
+<script>
+(function () {
+  "use strict";
+
+  var API_BASE = "";
+  var POLL_MS = 7000;
+
+  function lsGet(key) { try { return localStorage.getItem(key); } catch (e) { return null; } }
+  function lsSet(key, val) { try { localStorage.setItem(key, val); } catch (e) {} }
+  function lsDel(key) { try { localStorage.removeItem(key); } catch (e) {} }
+
+  function uid(prefix) {
+    return prefix + "_" + Math.random().toString(36).slice(2, 8) + Date.now().toString(36).slice(-4);
+  }
+
+  async function api(path, opts) {
+    opts = opts || {};
+    var res = await fetch(API_BASE + path, {
+      method: opts.method || "GET",
+      headers: opts.body ? { "Content-Type": "application/json" } : undefined,
+      body: opts.body ? JSON.stringify(opts.body) : undefined,
+    });
+    var data = null;
+    try { data = await res.json(); } catch (e) {}
+    if (!res.ok) {
+      var err = new Error((data && data.message) || (data && data.error) || ("HTTP " + res.status));
+      err.code = data && data.error;
+      err.status = res.status;
+      throw err;
+    }
+    return data;
+  }
+
+  // state.players / state.games mirror the API shape 1:1 (games carry their own .entries map).
+  var state = { eventTitle: "Saisonabschluss-Olympiade", eventSub: "Live-Scoreboard", eventDate: "", players: [], games: [] };
+
+  var role = null; // null = gate, 'admin', 'player'
+  var currentPlayerId = null;
+  var adminCode = lsGet("to_admin_code") || "";
+  if (adminCode) role = "admin";
+  else {
+    var savedPid = lsGet("to_player_id");
+    if (savedPid) { role = "player"; currentPlayerId = savedPid; }
+  }
+
+  var ui = {
+    tab: sessionStorage.getItem("to_activeTab") || "rangliste",
+    openGameId: sessionStorage.getItem("to_openGame") || null,
+    filterText: "",
+    bulkValue: "",
+    bulkSelected: {},
+    lbFilterText: "",
+    gateMode: "picker",
+    gateFilter: "",
+    gateError: "",
+    gateFirst: "",
+    gateLast: "",
+    adminCodeInput: "",
+    saving: false,
+    loaded: false,
+    loadError: "",
+  };
+
+  // ---------- scoring (unchanged) ----------
+  function computeGamePoints(game, players) {
+    var entries = [];
+    players.forEach(function (p) {
+      var v = game.entries ? game.entries[p.id] : undefined;
+      if (v !== undefined && v !== null && v !== "") entries.push({ playerId: p.id, value: Number(v) });
+    });
+    var n = entries.length;
+    var points = {};
+    if (n === 0) return points;
+    entries.sort(function (a, b) {
+      return game.direction === "low" ? a.value - b.value : b.value - a.value;
+    });
+    var i = 0;
+    while (i < entries.length) {
+      var j = i;
+      while (j + 1 < entries.length && entries[j + 1].value === entries[i].value) j++;
+      var pts = [];
+      for (var k = i; k <= j; k++) pts.push(n + 1 - (k + 1));
+      var avg = pts.reduce(function (a, b) { return a + b; }, 0) / pts.length;
+      for (var k2 = i; k2 <= j; k2++) points[entries[k2].playerId] = avg;
+      i = j + 1;
+    }
+    return points;
+  }
+
+  function computeTotals() {
+    var totals = {};
+    state.players.forEach(function (p) { totals[p.id] = 0; });
+    state.games.forEach(function (g) {
+      var pts = computeGamePoints(g, state.players);
+      Object.keys(pts).forEach(function (pid) { totals[pid] = (totals[pid] || 0) + pts[pid]; });
+    });
+    return totals;
+  }
+
+  function rankedPlayers() {
+    var totals = computeTotals();
+    var arr = state.players.map(function (p) { return { id: p.id, name: p.name, total: totals[p.id] || 0 }; });
+    arr.sort(function (a, b) { return b.total - a.total; });
+    var rank = 0, prevTotal = null, seen = 0;
+    arr.forEach(function (p) {
+      seen++;
+      if (p.total !== prevTotal) { rank = seen; prevTotal = p.total; }
+      p.rank = rank;
+    });
+    return arr;
+  }
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  function fmtPts(n) {
+    return (Math.round(n * 10) / 10).toString().replace(".", ",");
+  }
+
+  // ---------- focus-preserving render ----------
+  function withFocusPreserved(fn) {
+    var active = document.activeElement;
+    var activeId = active && active.id;
+    var selStart = null, selEnd = null;
+    if (active && "selectionStart" in active) {
+      try { selStart = active.selectionStart; selEnd = active.selectionEnd; } catch (e) {}
+    }
+    fn();
+    if (activeId) {
+      var el = document.getElementById(activeId);
+      if (el) {
+        el.focus();
+        if (selStart != null && "setSelectionRange" in el) {
+          try { el.setSelectionRange(selStart, selEnd); } catch (e) {}
+        }
+      }
+    }
+  }
+
+  function stashUi() {
+    try {
+      sessionStorage.setItem("to_activeTab", ui.tab);
+      sessionStorage.setItem("to_openGame", ui.openGameId || "");
+    } catch (e) {}
+  }
+
+  function applyServerState(fresh) {
+    state.eventTitle = fresh.eventTitle;
+    state.eventSub = fresh.eventSub;
+    state.eventDate = fresh.eventDate;
+    state.players = fresh.players;
+    state.games = fresh.games;
+  }
+
+  async function loadState() {
+    var fresh = await api("/api/state");
+    applyServerState(fresh);
+  }
+
+  // ---------- background refresh so other people's entries show up ----------
+  var pollTimer = null;
+  function startPolling() {
+    if (pollTimer) return;
+    pollTimer = setInterval(function () {
+      if (ui.saving) return;
+      loadState().then(function () { withFocusPreserved(render); }).catch(function () {});
+    }, POLL_MS);
+  }
+
+  // ---------- gate actions ----------
+  window.setGateMode = function (mode) {
+    ui.gateMode = mode;
+    ui.gateError = "";
+    render();
+  };
+  window.onGateFilter = function (val) {
+    ui.gateFilter = val;
+    withFocusPreserved(render);
+  };
+  window.onAdminCodeInput = function (val) {
+    ui.adminCodeInput = val;
+  };
+  window.submitAdminCode = function () {
+    if (ui.saving) return;
+    var code = (ui.adminCodeInput || "").trim();
+    if (!code) { ui.gateError = "Bitte Code eingeben."; render(); return; }
+    ui.saving = true;
+    ui.gateError = "";
+    render();
+    api("/api/admin", { method: "POST", body: { action: "login", code: code } })
+      .then(function () {
+        adminCode = code;
+        lsSet("to_admin_code", code);
+        role = "admin";
+        ui.saving = false;
+        render();
+      })
+      .catch(function (err) {
+        ui.saving = false;
+        ui.gateError = err.code === "wrong_code" ? "Code ist leider falsch." : ("Anmeldung fehlgeschlagen: " + err.message);
+        render();
+      });
+  };
+  window.selectPlayer = function (id) {
+    role = "player";
+    currentPlayerId = id;
+    lsSet("to_player_id", id);
+    render();
+  };
+  window.onGateFirst = function (val) { ui.gateFirst = val; };
+  window.onGateLast = function (val) { ui.gateLast = val; };
+  window.registerPlayer = function () {
+    if (ui.saving) return;
+    var first = (ui.gateFirst || "").trim();
+    var last = (ui.gateLast || "").trim();
+    if (!first || !last) {
+      ui.gateError = "Bitte Vor- und Nachnamen eingeben.";
+      render();
+      return;
+    }
+    ui.saving = true;
+    ui.gateError = "";
+    render();
+    api("/api/register", { method: "POST", body: { firstName: first, lastName: last } })
+      .then(function (res) {
+        applyServerState(res.state);
+        role = "player";
+        currentPlayerId = res.playerId;
+        lsSet("to_player_id", res.playerId);
+        ui.saving = false;
+        ui.gateError = "";
+        render();
+      })
+      .catch(function (err) {
+        ui.saving = false;
+        ui.gateError = "Anmeldung fehlgeschlagen: " + err.message;
+        render();
+      });
+  };
+  window.switchPlayer = function () {
+    role = null;
+    currentPlayerId = null;
+    lsDel("to_player_id");
+    ui.gateMode = "picker";
+    render();
+  };
+  window.logoutAdmin = function () {
+    role = null;
+    adminCode = "";
+    lsDel("to_admin_code");
+    ui.gateMode = "picker";
+    render();
+  };
+
+  // ---------- entry saving ----------
+  var fieldTimers = {};
+  var ENTRY_AUTOSAVE_DELAY_MS = 1200;
+
+  function saveEntryNow(gameId, playerId, value) {
+    ui.saving = true;
+    var status = document.getElementById("player-save-status");
+    if (status) status.textContent = "Wird gespeichert …";
+    return api("/api/entry", { method: "POST", body: { gameId: gameId, playerId: playerId, value: value === "" ? null : Number(value) } })
+      .then(function (res) {
+        applyServerState(res.state);
+        ui.saving = false;
+        var el = document.getElementById("player-save-status");
+        if (el) el.textContent = "Änderungen werden automatisch gespeichert.";
+      })
+      .catch(function (err) {
+        ui.saving = false;
+        var el = document.getElementById("player-save-status");
+        if (el) el.textContent = "Speichern fehlgeschlagen: " + err.message;
+      });
+  }
+
+  window.onPlayerEntryInput = function (gameId, playerId, val) {
+    var g = state.games.find(function (g) { return g.id === gameId; });
+    if (g) { if (!g.entries) g.entries = {}; if (val === "") delete g.entries[playerId]; else g.entries[playerId] = Number(val); }
+    var key = gameId + "|" + playerId;
+    if (fieldTimers[key]) clearTimeout(fieldTimers[key]);
+    var status = document.getElementById("player-save-status");
+    if (status) status.textContent = "Ungespeicherte Änderung …";
+    fieldTimers[key] = setTimeout(function () {
+      delete fieldTimers[key];
+      saveEntryNow(gameId, playerId, val);
+    }, ENTRY_AUTOSAVE_DELAY_MS);
+  };
+
+  // ---------- eingabe actions (admin) ----------
+  window.toggleGame = function (id) {
+    if (ui.openGameId !== id) {
+      ui.filterText = "";
+      ui.bulkValue = "";
+      ui.bulkSelected = {};
+    }
+    ui.openGameId = ui.openGameId === id ? null : id;
+    stashUi();
+    render();
+  };
+  window.onEntryInput = function (gameId, playerId, val) {
+    var g = state.games.find(function (g) { return g.id === gameId; });
+    if (!g) return;
+    if (!g.entries) g.entries = {};
+    if (val === "") { delete g.entries[playerId]; }
+    else { g.entries[playerId] = Number(val); }
+  };
+  window.onFilterInput = function (val) {
+    ui.filterText = val;
+    withFocusPreserved(render);
+  };
+  window.onBulkValueInput = function (val) {
+    ui.bulkValue = val;
+  };
+  window.toggleBulkSelect = function (playerId) {
+    if (ui.bulkSelected[playerId]) delete ui.bulkSelected[playerId];
+    else ui.bulkSelected[playerId] = true;
+    withFocusPreserved(render);
+  };
+  window.applyBulkValue = function (gameId) {
+    var ids = Object.keys(ui.bulkSelected);
+    if (!ids.length) { alert("Bitte zuerst Spieler auswählen."); return; }
+    if (ui.bulkValue === "" || isNaN(Number(ui.bulkValue))) { alert("Bitte einen Wert eingeben."); return; }
+    var g = state.games.find(function (g) { return g.id === gameId; });
+    if (!g) return;
+    if (!g.entries) g.entries = {};
+    ids.forEach(function (pid) { g.entries[pid] = Number(ui.bulkValue); });
+    ui.bulkSelected = {};
+    ui.bulkValue = "";
+    render();
+  };
+  window.saveGame = function () {
+    var g = state.games.find(function (g) { return g.id === ui.openGameId; });
+    if (!g) return;
+    ui.saving = true;
+    render();
+    var entries = {};
+    state.players.forEach(function (p) {
+      entries[p.id] = g.entries && g.entries[p.id] !== undefined ? g.entries[p.id] : null;
+    });
+    api("/api/entry", { method: "POST", body: { gameId: g.id, entries: entries } })
+      .then(function (res) {
+        applyServerState(res.state);
+        ui.saving = false;
+        render();
+      })
+      .catch(function (err) {
+        ui.saving = false;
+        alert("Speichern fehlgeschlagen: " + err.message);
+        render();
+      });
+  };
+  window.savePlayerEntries = function () {}; // kept as no-op: player view auto-saves per field now
+
+  // ---------- rangliste actions (admin) ----------
+  window.onLbFilter = function (val) {
+    ui.lbFilterText = val;
+    withFocusPreserved(render);
+  };
+
+  // ---------- tabs (admin) ----------
+  window.switchTab = function (tab) {
+    ui.tab = tab;
+    stashUi();
+    render();
+  };
+
+  // ---------- setup actions (admin only) ----------
+  window.onEventField = function (field, val) { state[field] = val; };
+  window.addPlayer = function () {
+    state.players.push({ id: uid("p"), name: "Spieler " + (state.players.length + 1) });
+    render();
+  };
+  window.addPlayersBulk = function () {
+    var ta = document.getElementById("bulk-add-textarea");
+    if (!ta) return;
+    var lines = ta.value.split("\n").map(function (s) { return s.trim(); }).filter(Boolean);
+    lines.forEach(function (name) { state.players.push({ id: uid("p"), name: name }); });
+    render();
+  };
+  window.removePlayer = function (id) {
+    state.players = state.players.filter(function (p) { return p.id !== id; });
+    state.games.forEach(function (g) { if (g.entries) delete g.entries[id]; });
+    delete ui.bulkSelected[id];
+    render();
+  };
+  window.onPlayerName = function (id, val) {
+    var p = state.players.find(function (p) { return p.id === id; });
+    if (p) p.name = val;
+  };
+  window.addGame = function () {
+    state.games.push({ id: uid("game"), name: "Neues Spiel", unit: "Punkte", direction: "high", entries: {} });
+    render();
+  };
+  window.removeGame = function (id) {
+    state.games = state.games.filter(function (g) { return g.id !== id; });
+    render();
+  };
+  window.onGameField = function (id, field, val) {
+    var g = state.games.find(function (g) { return g.id === id; });
+    if (g) g[field] = val;
+  };
+  window.setDirection = function (id, dir) {
+    var g = state.games.find(function (g) { return g.id === id; });
+    if (g) g.direction = dir;
+    render();
+  };
+  window.onNewAdminCode = function (val) { ui.newAdminCode = val; };
+  window.saveSetup = function () {
+    ui.saving = true;
+    render();
+    var payload = {
+      action: "save-setup",
+      code: adminCode,
+      eventTitle: state.eventTitle,
+      eventSub: state.eventSub,
+      eventDate: state.eventDate,
+      players: state.players.map(function (p) { return { id: p.id, name: p.name }; }),
+      games: state.games.map(function (g) { return { id: g.id, name: g.name, unit: g.unit, direction: g.direction }; }),
+    };
+    if (ui.newAdminCode && ui.newAdminCode.trim()) payload.adminCode = ui.newAdminCode.trim();
+    api("/api/admin", { method: "POST", body: payload })
+      .then(function (res) {
+        applyServerState(res.state);
+        if (payload.adminCode) { adminCode = payload.adminCode; lsSet("to_admin_code", adminCode); }
+        ui.newAdminCode = "";
+        ui.saving = false;
+        render();
+      })
+      .catch(function (err) {
+        ui.saving = false;
+        if (err.code === "wrong_code") {
+          alert("Admin-Code stimmt nicht (mehr) - bitte neu anmelden.");
+          window.logoutAdmin();
+        } else {
+          alert("Speichern fehlgeschlagen: " + err.message);
+          render();
+        }
+      });
+  };
+
+  // ---------- render: dispatch ----------
+  function render() {
+    document.getElementById("event-title-display").textContent = state.eventTitle || "Saisonabschluss-Olympiade";
+    document.getElementById("event-sub-display").textContent = state.eventSub || "Live-Scoreboard";
+    document.getElementById("event-date-pill").textContent = "📅 " + (state.eventDate ? state.eventDate : "Datum offen");
+    document.getElementById("event-players-pill").textContent = state.players.length + " Spieler";
+    document.getElementById("event-games-pill").textContent = state.games.length + " Spiele";
+
+    if (role === "admin") renderAdminApp();
+    else if (role === "player") renderPlayerApp();
+    else renderGate();
+  }
+
+  // ---------- gate screen ----------
+  function renderGate() {
+    var html;
+    if (ui.gateMode === "admin") {
+      html = '<div class="card"><h2>Admin-Zugang</h2>' +
+        '<p class="muted">Code eingeben, um Setup und alle Ergebnisse zu bearbeiten.</p>' +
+        '<input type="text" id="admin-code-input" placeholder="Admin-Code" value="' + esc(ui.adminCodeInput) + '" ' + (ui.saving ? "disabled " : "") + 'oninput="onAdminCodeInput(this.value)">' +
+        (ui.gateError ? '<p class="muted" style="color:var(--danger);margin-top:0.5rem;">' + esc(ui.gateError) + "</p>" : "") +
+        '<button class="btn btn-primary btn-block add-row" onclick="submitAdminCode()" ' + (ui.saving ? "disabled" : "") + ">" + (ui.saving ? "Prüfe …" : "Bestätigen") + "</button>" +
+        '<button class="btn btn-block add-row" onclick="setGateMode(\'picker\')">Zurück zur Spielerauswahl</button>' +
+        "</div>";
+    } else {
+      var regBlock = '<div class="card"><h2>Anmelden</h2>' +
+        '<p class="muted">Trag deinen Namen ein, um eigene Ergebnisse einzutragen. Beim ersten Mal legt das automatisch deinen Platz in der Liste an.</p>' +
+        '<div class="field-grid">' +
+        '<div><span class="field-label">Vorname</span><input type="text" id="gate-first-input" value="' + esc(ui.gateFirst) + '" ' + (ui.saving ? "disabled " : "") + 'oninput="onGateFirst(this.value)"></div>' +
+        '<div><span class="field-label">Nachname</span><input type="text" id="gate-last-input" value="' + esc(ui.gateLast) + '" ' + (ui.saving ? "disabled " : "") + 'oninput="onGateLast(this.value)"></div>' +
+        "</div>" +
+        (ui.gateError ? '<p class="muted" style="color:var(--danger);margin-top:0.6rem;">' + esc(ui.gateError) + "</p>" : "") +
+        '<button class="btn btn-primary btn-block add-row" onclick="registerPlayer()" ' + (ui.saving ? "disabled" : "") + ">" + (ui.saving ? "Wird angemeldet …" : "Anmelden") + "</button>" +
+        "</div>";
+
+      var pickBlock = "";
+      if (state.players.length) {
+        var filterLower = (ui.gateFilter || "").trim().toLowerCase();
+        var visible = state.players.filter(function (p) { return !filterLower || p.name.toLowerCase().indexOf(filterLower) !== -1; });
+        var rows = visible.slice().sort(function (a, b) { return a.name.localeCompare(b.name, "de"); }).map(function (p) {
+          return '<button class="btn btn-block btn-pick add-row" onclick="selectPlayer(\'' + p.id + "')\">" + esc(p.name) + "</button>";
+        }).join("");
+        pickBlock = '<div class="card"><h2>Schon angemeldet?</h2>' +
+          '<p class="muted">Falls du dich schon einmal angemeldet hast, tipp einfach deinen Namen an, statt dich neu einzutragen.</p>' +
+          (state.players.length > 8 ? '<input type="search" id="gate-filter-input" placeholder="Suchen…" value="' + esc(ui.gateFilter) + '" oninput="onGateFilter(this.value)" style="margin-bottom:0.6rem;">' : "") +
+          (visible.length ? rows : '<p class="muted">Keine Treffer.</p>') +
+          "</div>";
+      }
+
+      html = regBlock + pickBlock + '<p class="muted center"><a href="#" onclick="setGateMode(\'admin\');return false;">Ich bin Admin</a></p>';
+    }
+    document.getElementById("app-root").innerHTML = '<main>' + html + "</main>";
+  }
+
+  // ---------- player app ----------
+  function renderPlayerApp() {
+    var player = state.players.find(function (p) { return p.id === currentPlayerId; });
+    if (!player) {
+      role = null;
+      currentPlayerId = null;
+      lsDel("to_player_id");
+      renderGate();
+      return;
+    }
+    var rows = state.games.map(function (g) {
+      var val = g.entries && g.entries[player.id] !== undefined ? g.entries[player.id] : "";
+      return '<div class="entry-row">' +
+        '<div class="name">' + esc(g.name) + "</div>" +
+        '<input type="number" inputmode="decimal" step="any" value="' + esc(val) + '" ' +
+        'oninput="onPlayerEntryInput(\'' + g.id + "', '" + player.id + "', this.value)\">" +
+        '<div class="unit">' + esc(g.unit || "") + "</div>" +
+        "</div>";
+    }).join("");
+
+    var html =
+      '<div class="card"><div class="whoami">' +
+      '<div><div class="muted">Angemeldet als</div><h2>' + esc(player.name) + "</h2></div>" +
+      "</div></div>" +
+      '<div class="card"><h2>Meine Ergebnisse</h2>' +
+      '<p class="muted">Trag deine eigenen Werte ein. Wart ihr als Paar/Gruppe unterwegs, trägt jede:r seinen Teil selbst ein.</p>' +
+      (state.games.length ? rows : '<p class="muted">Noch keine Spiele angelegt.</p>') +
+      (state.games.length ? '<p class="muted save-status" id="player-save-status">Änderungen werden automatisch gespeichert.</p>' : "") +
+      "</div>" +
+      '<p class="muted center"><a href="#" onclick="switchPlayer();return false;">Nicht ' + esc(player.name) + "? Spieler wechseln</a></p>" +
+      '<footer class="note">Saisonabschluss-Olympiade Scoreboard</footer>';
+
+    document.getElementById("app-root").innerHTML = '<main>' + html + "</main>";
+  }
+
+  // ---------- admin app ----------
+  function renderAdminApp() {
+    document.getElementById("app-root").innerHTML =
+      '<nav class="tabbar">' +
+      '<button data-tab="rangliste">Rangliste</button>' +
+      '<button data-tab="eingabe">Eingabe</button>' +
+      '<button data-tab="setup">Setup</button>' +
+      "</nav>" +
+      '<main>' +
+      '<section class="view" id="view-rangliste"></section>' +
+      '<section class="view" id="view-eingabe"></section>' +
+      '<section class="view" id="view-setup"></section>' +
+      '<footer class="note">Saisonabschluss-Olympiade Scoreboard · Punkte je Spiel = (Anzahl eingetragener Spieler + 1) − Platzierung</footer>' +
+      "</main>";
+
+    document.querySelectorAll("nav.tabbar button").forEach(function (b) {
+      b.classList.toggle("active", b.getAttribute("data-tab") === ui.tab);
+      b.addEventListener("click", function () { switchTab(b.getAttribute("data-tab")); });
+    });
+    document.getElementById("view-rangliste").classList.toggle("active", ui.tab === "rangliste");
+    document.getElementById("view-eingabe").classList.toggle("active", ui.tab === "eingabe");
+    document.getElementById("view-setup").classList.toggle("active", ui.tab === "setup");
+
+    renderRangliste();
+    renderEingabe();
+    renderSetup();
+  }
+
+  function renderRangliste() {
+    var ranked = rankedPlayers();
+    var filterLower = (ui.lbFilterText || "").trim().toLowerCase();
+    var visibleRanked = filterLower ? ranked.filter(function (p) { return p.name.toLowerCase().indexOf(filterLower) !== -1; }) : ranked;
+
+    var rows = visibleRanked.map(function (p) {
+      var rc = p.rank === 1 ? "r1" : p.rank === 2 ? "r2" : p.rank === 3 ? "r3" : "";
+      return '<div class="lb-row">' +
+        '<div class="rank-badge ' + rc + '">' + p.rank + "</div>" +
+        '<div class="lb-name">' + esc(p.name) + "</div>" +
+        '<div class="lb-total">' + fmtPts(p.total) + '<span class="unit">Pkt</span></div>' +
+        "</div>";
+    }).join("");
+
+    var gameHeaders = state.games.map(function (g) { return "<th>" + esc(g.name) + "</th>"; }).join("");
+    var matrixRows = visibleRanked.map(function (p) {
+      var cells = state.games.map(function (g) {
+        var pts = computeGamePoints(g, state.players);
+        var v = pts[p.id];
+        return "<td>" + (v === undefined ? "–" : fmtPts(v)) + "</td>";
+      }).join("");
+      return "<tr><td>" + esc(p.name) + "</td>" + cells + '<td class="total-col">' + fmtPts(p.total) + "</td></tr>";
+    }).join("");
+
+    var filterBox = ranked.length > 8
+      ? '<input type="search" id="lb-filter-input" placeholder="Spieler suchen…" value="' + esc(ui.lbFilterText) + '" oninput="onLbFilter(this.value)" style="margin-bottom:0.7rem;">'
+      : "";
+
+    document.getElementById("view-rangliste").innerHTML =
+      '<div class="card">' +
+      "<h2>Gesamtwertung</h2>" +
+      filterBox +
+      (ranked.length ? (visibleRanked.length ? rows : '<p class="muted">Keine Treffer.</p>') : '<p class="muted">Noch keine Spieler angelegt – unter Setup Namen hinzufügen.</p>') +
+      "</div>" +
+      (ranked.length ? '<div class="card">' +
+        "<h2>Punkte je Spiel</h2>" +
+        '<div class="table-wrap"><table class="matrix"><thead><tr><th>Spieler</th>' + gameHeaders + '<th class="total-col">Gesamt</th></tr></thead><tbody>' +
+        matrixRows +
+        "</tbody></table></div>" +
+        '<details class="explain" style="margin-top:0.8rem;"><summary>Wie funktioniert die Wertung?</summary>' +
+        "<p>Bei jedem Spiel zählt nur die Platzierung, nicht die Rohzahl (Schläge, Meter, Sekunden, Siege …). " +
+        "Punkte je Spiel = (Anzahl eingetragener Spieler + 1) − Platzierung. Bei Gleichstand werden die Punkte der betroffenen Plätze gemittelt. " +
+        "Wird ein Spiel in zufälligen Paaren oder Gruppen gespielt, tragt einfach denselben Wert für alle Mitglieder ein (Mehrfachauswahl unter „Eingabe“) – gewertet wird trotzdem für jede Person einzeln.</p></details>" +
+        "</div>" : "");
+  }
+
+  function renderEingabe() {
+    if (!state.players.length) {
+      document.getElementById("view-eingabe").innerHTML =
+        '<div class="card"><h2>Ergebnisse eintragen</h2><p class="muted">Noch keine Spieler angelegt – zuerst unter Setup Namen hinzufügen.</p></div>';
+      return;
+    }
+
+    var filterLower = (ui.filterText || "").trim().toLowerCase();
+
+    var items = state.games.map(function (g) {
+      var entered = state.players.filter(function (p) { return g.entries && g.entries[p.id] !== undefined && g.entries[p.id] !== null; }).length;
+      var complete = entered === state.players.length;
+      var open = ui.openGameId === g.id;
+      if (!open) {
+        return '<div class="game-item">' +
+          '<div class="game-item-head" onclick="toggleGame(\'' + g.id + "')\">" +
+          "<div><h3>" + esc(g.name) + "</h3>" +
+          '<div class="status ' + (complete ? "complete" : "") + '">' + entered + "/" + state.players.length + " Spieler eingetragen" + (complete ? " · komplett" : "") + "</div>" +
+          "</div><div class=\"chev\">▸</div></div></div>";
+      }
+
+      var visiblePlayers = state.players
+        .filter(function (p) { return !filterLower || p.name.toLowerCase().indexOf(filterLower) !== -1; })
+        .slice()
+        .sort(function (a, b) { return a.name.localeCompare(b.name, "de"); });
+
+      var selectedCount = Object.keys(ui.bulkSelected).length;
+
+      var rows = visiblePlayers.map(function (p) {
+        var val = g.entries && g.entries[p.id] !== undefined ? g.entries[p.id] : "";
+        var checked = !!ui.bulkSelected[p.id];
+        return '<div class="entry-row' + (checked ? " selected" : "") + '">' +
+          '<input type="checkbox" ' + (checked ? "checked " : "") +
+          'onchange="toggleBulkSelect(\'' + p.id + '\')" aria-label="' + esc(p.name) + ' auswählen">' +
+          '<div class="name">' + esc(p.name) + "</div>" +
+          '<input type="number" inputmode="decimal" step="any" value="' + esc(val) + '" ' +
+          'oninput="onEntryInput(\'' + g.id + "', '" + p.id + "', this.value)\">" +
+          '<div class="unit">' + esc(g.unit || "") + "</div>" +
+          "</div>";
+      }).join("");
+
+      var bulkPanel = '<div class="bulk-panel">' +
+          '<input type="search" id="filter-input" placeholder="Spieler suchen…" value="' + esc(ui.filterText) + '" oninput="onFilterInput(this.value)">' +
+          '<div class="bulk-row">' +
+          '<input type="number" id="bulk-value-input" inputmode="decimal" step="any" placeholder="Wert" value="' + esc(ui.bulkValue) + '" oninput="onBulkValueInput(this.value)">' +
+          '<button class="btn" onclick="applyBulkValue(\'' + g.id + '\')">Für ' + selectedCount + ' ausgewählte übernehmen</button>' +
+          "</div>" +
+          '<div class="bulk-hint">Für Spiele in zufälligen Paaren/Gruppen: Mitglieder oben ankreuzen, gemeinsamen Wert eintragen, übernehmen.</div>' +
+          "</div>";
+
+      return '<div class="game-item open">' +
+        '<div class="game-item-head" onclick="toggleGame(\'' + g.id + "')\">" +
+        "<div><h3>" + esc(g.name) + "</h3>" +
+        '<div class="status ' + (complete ? "complete" : "") + '">' + entered + "/" + state.players.length + " Spieler eingetragen" + (complete ? " · komplett" : "") + "</div>" +
+        "</div><div class=\"chev\">▸</div></div>" +
+        '<div class="game-item-body">' + bulkPanel + rows +
+        (!visiblePlayers.length ? '<p class="muted">Keine Treffer.</p>' : "") +
+        '<button class="btn btn-primary btn-block add-row" onclick="saveGame()" ' + (ui.saving ? "disabled" : "") + ">" + (ui.saving ? "Speichere …" : "Speichern") + "</button>" +
+        "</div></div>";
+    }).join("");
+
+    document.getElementById("view-eingabe").innerHTML =
+      '<div class="card"><h2>Ergebnisse eintragen</h2><p class="muted">Als Admin kannst du hier für alle eintragen. Spiel antippen, Werte eintragen, speichern. Bei Paaren/Gruppen: Spieler ankreuzen und Wert gemeinsam übernehmen – gewertet wird trotzdem individuell.</p></div>' +
+      (state.games.length ? items : '<p class="muted">Noch keine Spiele angelegt – unter Setup hinzufügen.</p>');
+  }
+
+  function renderSetup() {
+    var playerRows = state.players.map(function (p) {
+      return '<div class="player-row">' +
+        '<input type="text" id="player-name-' + p.id + '" value="' + esc(p.name) + '" ' +
+        'oninput="onPlayerName(\'' + p.id + "', this.value)\">" +
+        '<button class="icon-btn" onclick="removePlayer(\'' + p.id + '\')" aria-label="Spieler entfernen">✕</button>' +
+        "</div>";
+    }).join("");
+
+    var gameRows = state.games.map(function (g) {
+      return '<div class="game-setup-card">' +
+        '<div class="row-top">' +
+        '<input type="text" value="' + esc(g.name) + '" ' +
+        'oninput="onGameField(\'' + g.id + "', 'name', this.value)\">" +
+        '<button class="icon-btn" onclick="removeGame(\'' + g.id + '\')" aria-label="Spiel entfernen">✕</button>' +
+        "</div>" +
+        '<div class="field-grid">' +
+        '<div><span class="field-label">Einheit (z. B. Schläge, cm, Punkte, Sek.)</span>' +
+        '<input type="text" value="' + esc(g.unit || "") + '" ' +
+        'oninput="onGameField(\'' + g.id + "', 'unit', this.value)\"></div>" +
+        '<div><span class="field-label">Wertungsrichtung</span>' +
+        '<div class="direction-toggle">' +
+        '<button class="' + (g.direction === "low" ? "active" : "") + '" onclick="setDirection(\'' + g.id + "', 'low')\">weniger ist besser</button>" +
+        '<button class="' + (g.direction === "high" ? "active" : "") + '" onclick="setDirection(\'' + g.id + "', 'high')\">mehr ist besser</button>" +
+        "</div></div></div></div>";
+    }).join("");
+
+    document.getElementById("view-setup").innerHTML =
+      '<div class="card"><h2>Admin-Zugang</h2>' +
+      '<p class="muted">Angemeldet als Admin. <a href="#" onclick="logoutAdmin();return false;">Abmelden</a></p>' +
+      '<div class="field-grid"><div><span class="field-label">Neuer Admin-Code (leer lassen, um ihn nicht zu ändern)</span>' +
+      '<input type="text" id="new-admin-code-input" value="' + esc(ui.newAdminCode || "") + '" placeholder="unverändert lassen" oninput="onNewAdminCode(this.value)"></div></div>' +
+      '<p class="muted" style="margin-top:0.5rem;">Diesen Code gibst du an alle weiter, die im Setup mitbearbeiten dürfen sollen. Achtung: Das ist eine einfache Zugangssperre, kein echter Passwortschutz.</p>' +
+      "</div>" +
+      '<div class="card"><h2>Event</h2>' +
+      '<div class="field-grid">' +
+      '<div><span class="field-label">Titel</span><input type="text" value="' + esc(state.eventTitle || "") + '" oninput="onEventField(\'eventTitle\', this.value)"></div>' +
+      '<div><span class="field-label">Untertitel</span><input type="text" value="' + esc(state.eventSub || "") + '" oninput="onEventField(\'eventSub\', this.value)"></div>' +
+      '<div><span class="field-label">Datum</span><input type="text" value="' + esc(state.eventDate || "") + '" placeholder="z. B. 12.09.2026" oninput="onEventField(\'eventDate\', this.value)"></div>' +
+      "</div></div>" +
+      '<div class="card"><h2>Spieler</h2>' +
+      '<p class="muted">Spieler melden sich normalerweise selbst mit Vor- und Nachname an – du musst hier nichts eintragen. Diese Liste ist zum Nachpflegen: Tippfehler korrigieren, Duplikate entfernen oder jemanden manuell hinzufügen.</p>' +
+      '<div class="field-grid" style="margin-top:0.7rem;"><div><span class="field-label">Mehrere Namen auf einmal hinzufügen (ein Name pro Zeile)</span>' +
+      '<textarea id="bulk-add-textarea" rows="4" placeholder="Anna Muster\nMax Mustermann…"></textarea></div></div>' +
+      '<button class="btn add-row" onclick="addPlayersBulk()">Namen hinzufügen</button>' +
+      (state.players.length ? '<div style="margin-top:0.9rem;">' + playerRows + "</div>" : '<p class="muted" style="margin-top:0.7rem;">Noch keine Spieler.</p>') +
+      '<button class="btn add-row" onclick="addPlayer()">+ Einzelnen Spieler hinzufügen</button>' +
+      "</div>" +
+      '<div class="card"><h2>Spiele</h2>' + gameRows +
+      '<button class="btn add-row" onclick="addGame()">+ Spiel hinzufügen</button>' +
+      "</div>" +
+      '<button class="btn btn-primary btn-block" onclick="saveSetup()" ' + (ui.saving ? "disabled" : "") + ">" + (ui.saving ? "Speichere …" : "Änderungen speichern") + "</button>";
+  }
+
+  // ---------- boot ----------
+  loadState()
+    .then(function () {
+      ui.loaded = true;
+      render();
+      startPolling();
+    })
+    .catch(function (err) {
+      document.getElementById("app-root").innerHTML =
+        '<main><div class="card"><h2>Laden fehlgeschlagen</h2><p class="muted">' + esc(err.message) + '</p>' +
+        '<button class="btn btn-primary add-row" onclick="location.reload()">Erneut versuchen</button></div></main>';
+    });
+})();
+</script>
+</body>
+</html>
