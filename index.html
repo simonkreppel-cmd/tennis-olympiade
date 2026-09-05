@@ -219,16 +219,12 @@
   table.matrix th:first-child { background: var(--surface-2); }
   table.matrix td.total-col, table.matrix th.total-col { font-weight: 800; font-family: "JetBrains Mono", monospace; }
 
-  details.explain summary {
-    cursor: pointer; font-weight: 700; font-size: 0.9rem; color: var(--accent-ink);
-    list-style: none;
+  .explain-title {
+    font-weight: 700; font-size: 0.9rem; color: var(--accent-ink);
   }
-  :root[data-theme="dark"] details.explain summary,
-  :root:not([data-theme="light"]) details.explain summary { color: var(--accent); }
-  details.explain summary::-webkit-details-marker { display: none; }
-  details.explain summary::before { content: "▸ "; }
-  details.explain[open] summary::before { content: "▾ "; }
-  details.explain p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; margin: 0.6rem 0 0; }
+  :root[data-theme="dark"] .explain-title,
+  :root:not([data-theme="light"]) .explain-title { color: var(--accent); }
+  .explain p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; margin: 0.6rem 0 0; }
 
   .player-row, .game-setup-row {
     display: flex; align-items: center; gap: 0.5rem;
@@ -925,10 +921,10 @@
         '<div class="table-wrap"><table class="matrix"><thead><tr><th>Spieler</th>' + gameHeaders + '<th class="total-col">Gesamt</th></tr></thead><tbody>' +
         matrixRows +
         "</tbody></table></div>" +
-        '<details class="explain" style="margin-top:0.8rem;"><summary>Wie funktioniert die Wertung?</summary>' +
+        '<div class="explain" style="margin-top:0.8rem;"><div class="explain-title">Wie funktioniert die Wertung?</div>' +
         "<p>Bei jedem Spiel zählt nur die Platzierung, nicht die Rohzahl (Schläge, Meter, Sekunden, Siege …). " +
         "Punkte je Spiel = (Anzahl eingetragener Spieler + 1) − Platzierung. Bei Gleichstand werden die Punkte der betroffenen Plätze gemittelt. " +
-        "Wird ein Spiel in zufälligen Paaren oder Gruppen gespielt, tragt einfach denselben Wert für alle Mitglieder ein (Mehrfachauswahl unter „Eingabe“) – gewertet wird trotzdem für jede Person einzeln.</p></details>" +
+        "Wird ein Spiel in zufälligen Paaren oder Gruppen gespielt, tragt einfach denselben Wert für alle Mitglieder ein (Mehrfachauswahl unter „Eingabe“) – gewertet wird trotzdem für jede Person einzeln.</p></div>" +
         "</div>" : "");
   }
 
