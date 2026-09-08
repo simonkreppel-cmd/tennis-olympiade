@@ -639,9 +639,40 @@
 
   // ---------- setup actions (admin only) ----------
   window.onEventField = function (field, val) { state[field] = val; };
+
+  // Newly created players are saved to the server right away (so they're fully
+  // usable and show up on the login/picker screen immediately) without forcing
+  // a save of whatever else might still be mid-edit in Setup (event fields,
+  // games, admin code) - only the players list is sent and applied back.
+  function persistPlayersNow() {
+    ui.saving = true;
+    render();
+    var payload = {
+      action: "save-setup",
+      code: adminCode,
+      players: state.players.map(function (p) { return { id: p.id, name: p.name }; }),
+    };
+    return api("/api/admin", { method: "POST", body: payload })
+      .then(function (res) {
+        state.players = res.state.players;
+        ui.saving = false;
+        render();
+      })
+      .catch(function (err) {
+        ui.saving = false;
+        if (err.code === "wrong_code") {
+          alert("Admin-Code stimmt nicht (mehr) - bitte neu anmelden.");
+          window.logoutAdmin();
+        } else {
+          alert("Speichern fehlgeschlagen: " + err.message);
+          render();
+        }
+      });
+  }
   window.addPlayer = function () {
     state.players.push({ id: uid("p"), name: "Spieler " + (state.players.length + 1) });
     render();
+    persistPlayersNow();
   };
   window.onBulkAddText = function (val) { ui.bulkAddText = val; };
   window.addPlayersBulk = function () {
@@ -650,6 +681,7 @@
     lines.forEach(function (name) { state.players.push({ id: uid("p"), name: name }); });
     ui.bulkAddText = "";
     render();
+    persistPlayersNow();
   };
   window.removePlayer = function (id) {
     state.players = state.players.filter(function (p) { return p.id !== id; });
