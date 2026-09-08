@@ -283,19 +283,11 @@
   .game-item-body { display: none; padding: 0 1rem 1rem; border-top: 1px solid var(--border); }
   .game-item.open .game-item-body { display: block; }
 
-  .bulk-panel { background: var(--surface-2); border: 1px solid var(--border); border-radius: 0.6rem; padding: 0.7rem; margin: 0.8rem 0 0.4rem; }
-  .bulk-panel .bulk-row { display: flex; gap: 0.5rem; align-items: center; margin-top: 0.55rem; }
-  .bulk-panel .bulk-row input[type="number"] { width: 6.5rem; flex: none; }
-  .bulk-panel .bulk-row button { flex: 1; }
-  .bulk-hint { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.4rem; }
-
   .entry-row { display: flex; align-items: center; gap: 0.6rem; padding: 0.55rem 0; border-bottom: 1px dashed var(--border); }
   .entry-row:last-of-type { border-bottom: none; }
-  .entry-row input[type="checkbox"] { flex: none; width: 1.2rem; height: 1.2rem; accent-color: var(--accent); margin: 0; }
   .entry-row .name { flex: 1; font-weight: 600; font-size: 0.92rem; }
   .entry-row input[type="number"] { width: 6.5rem; text-align: right; flex: none; }
   .entry-row .unit { width: 3.2rem; font-size: 0.76rem; color: var(--text-muted); }
-  .entry-row.selected { background: var(--accent-soft); border-radius: 0.5rem; padding-left: 0.4rem; padding-right: 0.4rem; margin: 0 -0.4rem; }
 
   .whoami { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; }
   .whoami .stat { text-align: right; }
@@ -371,8 +363,6 @@
     tab: sessionStorage.getItem("to_activeTab") || "rangliste",
     openGameId: sessionStorage.getItem("to_openGame") || null,
     filterText: "",
-    bulkValue: "",
-    bulkSelected: {},
     lbFilterText: "",
     gateMode: "picker",
     gateFilter: "",
@@ -623,64 +613,14 @@
   window.toggleGame = function (id) {
     if (ui.openGameId !== id) {
       ui.filterText = "";
-      ui.bulkValue = "";
-      ui.bulkSelected = {};
     }
     ui.openGameId = ui.openGameId === id ? null : id;
     stashUi();
     render();
   };
-  window.onEntryInput = function (gameId, playerId, val) {
-    var g = state.games.find(function (g) { return g.id === gameId; });
-    if (!g) return;
-    if (!g.entries) g.entries = {};
-    if (val === "") { delete g.entries[playerId]; }
-    else { g.entries[playerId] = Number(val); }
-  };
   window.onFilterInput = function (val) {
     ui.filterText = val;
     withFocusPreserved(render);
-  };
-  window.onBulkValueInput = function (val) {
-    ui.bulkValue = val;
-  };
-  window.toggleBulkSelect = function (playerId) {
-    if (ui.bulkSelected[playerId]) delete ui.bulkSelected[playerId];
-    else ui.bulkSelected[playerId] = true;
-    withFocusPreserved(render);
-  };
-  window.applyBulkValue = function (gameId) {
-    var ids = Object.keys(ui.bulkSelected);
-    if (!ids.length) { alert("Bitte zuerst Spieler auswählen."); return; }
-    if (ui.bulkValue === "" || isNaN(Number(ui.bulkValue))) { alert("Bitte einen Wert eingeben."); return; }
-    var g = state.games.find(function (g) { return g.id === gameId; });
-    if (!g) return;
-    if (!g.entries) g.entries = {};
-    ids.forEach(function (pid) { g.entries[pid] = Number(ui.bulkValue); });
-    ui.bulkSelected = {};
-    ui.bulkValue = "";
-    render();
-  };
-  window.saveGame = function () {
-    var g = state.games.find(function (g) { return g.id === ui.openGameId; });
-    if (!g) return;
-    ui.saving = true;
-    render();
-    var entries = {};
-    state.players.forEach(function (p) {
-      entries[p.id] = g.entries && g.entries[p.id] !== undefined ? g.entries[p.id] : null;
-    });
-    api("/api/entry", { method: "POST", body: { gameId: g.id, entries: entries } })
-      .then(function (res) {
-        applyServerState(res.state);
-        ui.saving = false;
-        render();
-      })
-      .catch(function (err) {
-        ui.saving = false;
-        alert("Speichern fehlgeschlagen: " + err.message);
-        render();
-      });
   };
   window.savePlayerEntries = function () {}; // kept as no-op: player view auto-saves per field now
 
@@ -714,7 +654,6 @@
   window.removePlayer = function (id) {
     state.players = state.players.filter(function (p) { return p.id !== id; });
     state.games.forEach(function (g) { if (g.entries) delete g.entries[id]; });
-    delete ui.bulkSelected[id];
     render();
   };
   window.onPlayerName = function (id, val) {
@@ -961,43 +900,31 @@
         .slice()
         .sort(function (a, b) { return a.name.localeCompare(b.name, "de"); });
 
-      var selectedCount = Object.keys(ui.bulkSelected).length;
-
       var rows = visiblePlayers.map(function (p) {
         var val = g.entries && g.entries[p.id] !== undefined ? g.entries[p.id] : "";
-        var checked = !!ui.bulkSelected[p.id];
-        return '<div class="entry-row' + (checked ? " selected" : "") + '">' +
-          '<input type="checkbox" ' + (checked ? "checked " : "") +
-          'onchange="toggleBulkSelect(\'' + p.id + '\')" aria-label="' + esc(p.name) + ' auswählen">' +
+        return '<div class="entry-row">' +
           '<div class="name">' + esc(p.name) + "</div>" +
           '<input type="number" inputmode="decimal" step="any" value="' + esc(val) + '" ' +
-          'oninput="onEntryInput(\'' + g.id + "', '" + p.id + "', this.value)\">" +
+          'oninput="onPlayerEntryInput(\'' + g.id + "', '" + p.id + "', this.value)\">" +
           '<div class="unit">' + esc(g.unit || "") + "</div>" +
           "</div>";
       }).join("");
-
-      var bulkPanel = '<div class="bulk-panel">' +
-          '<input type="search" id="filter-input" placeholder="Spieler suchen…" value="' + esc(ui.filterText) + '" oninput="onFilterInput(this.value)">' +
-          '<div class="bulk-row">' +
-          '<input type="number" id="bulk-value-input" inputmode="decimal" step="any" placeholder="Wert" value="' + esc(ui.bulkValue) + '" oninput="onBulkValueInput(this.value)">' +
-          '<button class="btn" onclick="applyBulkValue(\'' + g.id + '\')">Für ' + selectedCount + ' ausgewählte übernehmen</button>' +
-          "</div>" +
-          '<div class="bulk-hint">Für Spiele in zufälligen Paaren/Gruppen: Mitglieder oben ankreuzen, gemeinsamen Wert eintragen, übernehmen.</div>' +
-          "</div>";
 
       return '<div class="game-item open">' +
         '<div class="game-item-head" onclick="toggleGame(\'' + g.id + "')\">" +
         "<div><h3>" + esc(g.name) + "</h3>" +
         '<div class="status ' + (complete ? "complete" : "") + '">' + entered + "/" + state.players.length + " Spieler eingetragen" + (complete ? " · komplett" : "") + "</div>" +
         "</div><div class=\"chev\">▸</div></div>" +
-        '<div class="game-item-body">' + bulkPanel + rows +
+        '<div class="game-item-body">' +
+        '<input type="search" id="filter-input" placeholder="Spieler suchen…" value="' + esc(ui.filterText) + '" oninput="onFilterInput(this.value)" style="margin-top:0.8rem;">' +
+        rows +
         (!visiblePlayers.length ? '<p class="muted">Keine Treffer.</p>' : "") +
-        '<button class="btn btn-primary btn-block add-row" onclick="saveGame()" ' + (ui.saving ? "disabled" : "") + ">" + (ui.saving ? "Speichere …" : "Speichern") + "</button>" +
+        '<p class="muted save-status" id="player-save-status">Änderungen werden automatisch gespeichert.</p>' +
         "</div></div>";
     }).join("");
 
     document.getElementById("view-eingabe").innerHTML =
-      '<div class="card"><h2>Ergebnisse eintragen</h2><p class="muted">Als Admin kannst du hier für alle eintragen. Spiel antippen, Werte eintragen, speichern. Bei Paaren/Gruppen: Spieler ankreuzen und Wert gemeinsam übernehmen – gewertet wird trotzdem individuell.</p></div>' +
+      '<div class="card"><h2>Ergebnisse eintragen</h2><p class="muted">Als Admin kannst du hier für alle eintragen. Spiel antippen und Werte direkt in der Liste eintragen – wird automatisch gespeichert.</p></div>' +
       (state.games.length ? items : '<p class="muted">Noch keine Spiele angelegt – unter Setup hinzufügen.</p>');
   }
 
