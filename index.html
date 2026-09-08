@@ -643,6 +643,8 @@
   // immediately; text fields (event info, names, units, admin code) debounce
   // briefly after typing stops so we're not firing a request per keystroke.
   var setupSaveTimer = null;
+  var setupSaveInFlight = false;
+  var setupSaveQueued = false;
   var SETUP_AUTOSAVE_DELAY_MS = 1200;
 
   function setSetupStatus(text) {
@@ -652,6 +654,14 @@
 
   function persistSetupNow() {
     if (setupSaveTimer) { clearTimeout(setupSaveTimer); setupSaveTimer = null; }
+    // Setup saves fully replace the players/games lists server-side, so two
+    // overlapping requests must never both be in flight: a slow earlier
+    // request's response could otherwise land after a newer edit and stomp
+    // on it. If a save is already running, just flag that another is needed
+    // and re-run once the current one finishes, using whatever is in `state`
+    // at that point (i.e. every edit made in the meantime, untouched).
+    if (setupSaveInFlight) { setupSaveQueued = true; setSetupStatus("Ungespeicherte Änderung …"); return; }
+    setupSaveInFlight = true;
     ui.saving = true;
     setSetupStatus("Wird gespeichert …");
     var payload = {
@@ -666,21 +676,33 @@
     if (ui.newAdminCode && ui.newAdminCode.trim()) payload.adminCode = ui.newAdminCode.trim();
     return api("/api/admin", { method: "POST", body: payload })
       .then(function (res) {
+        setupSaveInFlight = false;
+        ui.saving = false;
+        if (setupSaveQueued) {
+          // Something changed while this request was in flight: don't apply
+          // this (now-stale) response over it, just re-save the latest state.
+          setupSaveQueued = false;
+          persistSetupNow();
+          return;
+        }
         state.eventTitle = res.state.eventTitle;
         state.eventSub = res.state.eventSub;
         state.eventDate = res.state.eventDate;
         state.players = res.state.players;
         state.games = res.state.games;
         if (payload.adminCode) { adminCode = payload.adminCode; lsSet("to_admin_code", adminCode); ui.newAdminCode = ""; }
-        ui.saving = false;
         setSetupStatus("Änderungen werden automatisch gespeichert.");
         withFocusPreserved(render);
       })
       .catch(function (err) {
+        setupSaveInFlight = false;
         ui.saving = false;
         if (err.code === "wrong_code") {
           alert("Admin-Code stimmt nicht (mehr) - bitte neu anmelden.");
           window.logoutAdmin();
+        } else if (setupSaveQueued) {
+          setupSaveQueued = false;
+          persistSetupNow();
         } else {
           setSetupStatus("Speichern fehlgeschlagen: " + err.message);
         }
