@@ -638,81 +638,22 @@
   };
 
   // ---------- setup actions (admin only) ----------
-  window.onEventField = function (field, val) { state[field] = val; };
+  // Everything in Setup autosaves - there is no "Speichern" button anywhere.
+  // Discrete actions (add/remove player or game, toggle direction) persist
+  // immediately; text fields (event info, names, units, admin code) debounce
+  // briefly after typing stops so we're not firing a request per keystroke.
+  var setupSaveTimer = null;
+  var SETUP_AUTOSAVE_DELAY_MS = 1200;
 
-  // Newly created players are saved to the server right away (so they're fully
-  // usable and show up on the login/picker screen immediately) without forcing
-  // a save of whatever else might still be mid-edit in Setup (event fields,
-  // games, admin code) - only the players list is sent and applied back.
-  function persistPlayersNow() {
-    ui.saving = true;
-    render();
-    var payload = {
-      action: "save-setup",
-      code: adminCode,
-      players: state.players.map(function (p) { return { id: p.id, name: p.name }; }),
-    };
-    return api("/api/admin", { method: "POST", body: payload })
-      .then(function (res) {
-        state.players = res.state.players;
-        ui.saving = false;
-        render();
-      })
-      .catch(function (err) {
-        ui.saving = false;
-        if (err.code === "wrong_code") {
-          alert("Admin-Code stimmt nicht (mehr) - bitte neu anmelden.");
-          window.logoutAdmin();
-        } else {
-          alert("Speichern fehlgeschlagen: " + err.message);
-          render();
-        }
-      });
+  function setSetupStatus(text) {
+    var el = document.getElementById("setup-save-status");
+    if (el) el.textContent = text;
   }
-  window.addPlayer = function () {
-    state.players.push({ id: uid("p"), name: "Spieler " + (state.players.length + 1) });
-    render();
-    persistPlayersNow();
-  };
-  window.onBulkAddText = function (val) { ui.bulkAddText = val; };
-  window.addPlayersBulk = function () {
-    var lines = (ui.bulkAddText || "").split("\n").map(function (s) { return s.trim(); }).filter(Boolean);
-    if (!lines.length) return;
-    lines.forEach(function (name) { state.players.push({ id: uid("p"), name: name }); });
-    ui.bulkAddText = "";
-    render();
-    persistPlayersNow();
-  };
-  window.removePlayer = function (id) {
-    state.players = state.players.filter(function (p) { return p.id !== id; });
-    state.games.forEach(function (g) { if (g.entries) delete g.entries[id]; });
-    render();
-  };
-  window.onPlayerName = function (id, val) {
-    var p = state.players.find(function (p) { return p.id === id; });
-    if (p) p.name = val;
-  };
-  window.addGame = function () {
-    state.games.push({ id: uid("game"), name: "Neues Spiel", unit: "Punkte", direction: "high", entries: {} });
-    render();
-  };
-  window.removeGame = function (id) {
-    state.games = state.games.filter(function (g) { return g.id !== id; });
-    render();
-  };
-  window.onGameField = function (id, field, val) {
-    var g = state.games.find(function (g) { return g.id === id; });
-    if (g) g[field] = val;
-  };
-  window.setDirection = function (id, dir) {
-    var g = state.games.find(function (g) { return g.id === id; });
-    if (g) g.direction = dir;
-    render();
-  };
-  window.onNewAdminCode = function (val) { ui.newAdminCode = val; };
-  window.saveSetup = function () {
+
+  function persistSetupNow() {
+    if (setupSaveTimer) { clearTimeout(setupSaveTimer); setupSaveTimer = null; }
     ui.saving = true;
-    render();
+    setSetupStatus("Wird gespeichert …");
     var payload = {
       action: "save-setup",
       code: adminCode,
@@ -723,13 +664,17 @@
       games: state.games.map(function (g) { return { id: g.id, name: g.name, unit: g.unit, direction: g.direction }; }),
     };
     if (ui.newAdminCode && ui.newAdminCode.trim()) payload.adminCode = ui.newAdminCode.trim();
-    api("/api/admin", { method: "POST", body: payload })
+    return api("/api/admin", { method: "POST", body: payload })
       .then(function (res) {
-        applyServerState(res.state);
-        if (payload.adminCode) { adminCode = payload.adminCode; lsSet("to_admin_code", adminCode); }
-        ui.newAdminCode = "";
+        state.eventTitle = res.state.eventTitle;
+        state.eventSub = res.state.eventSub;
+        state.eventDate = res.state.eventDate;
+        state.players = res.state.players;
+        state.games = res.state.games;
+        if (payload.adminCode) { adminCode = payload.adminCode; lsSet("to_admin_code", adminCode); ui.newAdminCode = ""; }
         ui.saving = false;
-        render();
+        setSetupStatus("Änderungen werden automatisch gespeichert.");
+        withFocusPreserved(render);
       })
       .catch(function (err) {
         ui.saving = false;
@@ -737,11 +682,68 @@
           alert("Admin-Code stimmt nicht (mehr) - bitte neu anmelden.");
           window.logoutAdmin();
         } else {
-          alert("Speichern fehlgeschlagen: " + err.message);
-          render();
+          setSetupStatus("Speichern fehlgeschlagen: " + err.message);
         }
       });
+  }
+
+  function scheduleSetupSave() {
+    setSetupStatus("Ungespeicherte Änderung …");
+    if (setupSaveTimer) clearTimeout(setupSaveTimer);
+    setupSaveTimer = setTimeout(function () {
+      setupSaveTimer = null;
+      persistSetupNow();
+    }, SETUP_AUTOSAVE_DELAY_MS);
+  }
+
+  window.onEventField = function (field, val) { state[field] = val; scheduleSetupSave(); };
+  window.addPlayer = function () {
+    state.players.push({ id: uid("p"), name: "Spieler " + (state.players.length + 1) });
+    render();
+    persistSetupNow();
   };
+  window.onBulkAddText = function (val) { ui.bulkAddText = val; };
+  window.addPlayersBulk = function () {
+    var lines = (ui.bulkAddText || "").split("\n").map(function (s) { return s.trim(); }).filter(Boolean);
+    if (!lines.length) return;
+    lines.forEach(function (name) { state.players.push({ id: uid("p"), name: name }); });
+    ui.bulkAddText = "";
+    render();
+    persistSetupNow();
+  };
+  window.removePlayer = function (id) {
+    state.players = state.players.filter(function (p) { return p.id !== id; });
+    state.games.forEach(function (g) { if (g.entries) delete g.entries[id]; });
+    render();
+    persistSetupNow();
+  };
+  window.onPlayerName = function (id, val) {
+    var p = state.players.find(function (p) { return p.id === id; });
+    if (p) p.name = val;
+    scheduleSetupSave();
+  };
+  window.addGame = function () {
+    state.games.push({ id: uid("game"), name: "Neues Spiel", unit: "Punkte", direction: "high", entries: {} });
+    render();
+    persistSetupNow();
+  };
+  window.removeGame = function (id) {
+    state.games = state.games.filter(function (g) { return g.id !== id; });
+    render();
+    persistSetupNow();
+  };
+  window.onGameField = function (id, field, val) {
+    var g = state.games.find(function (g) { return g.id === id; });
+    if (g) g[field] = val;
+    scheduleSetupSave();
+  };
+  window.setDirection = function (id, dir) {
+    var g = state.games.find(function (g) { return g.id === id; });
+    if (g) g.direction = dir;
+    render();
+    persistSetupNow();
+  };
+  window.onNewAdminCode = function (val) { ui.newAdminCode = val; scheduleSetupSave(); };
 
   // ---------- render: dispatch ----------
   function render() {
@@ -972,13 +974,13 @@
     var gameRows = state.games.map(function (g) {
       return '<div class="game-setup-card">' +
         '<div class="row-top">' +
-        '<input type="text" value="' + esc(g.name) + '" ' +
+        '<input type="text" id="game-name-' + g.id + '" value="' + esc(g.name) + '" ' +
         'oninput="onGameField(\'' + g.id + "', 'name', this.value)\">" +
         '<button class="icon-btn" onclick="removeGame(\'' + g.id + '\')" aria-label="Spiel entfernen">✕</button>' +
         "</div>" +
         '<div class="field-grid">' +
         '<div><span class="field-label">Einheit (z. B. Schläge, cm, Punkte, Sek.)</span>' +
-        '<input type="text" value="' + esc(g.unit || "") + '" ' +
+        '<input type="text" id="game-unit-' + g.id + '" value="' + esc(g.unit || "") + '" ' +
         'oninput="onGameField(\'' + g.id + "', 'unit', this.value)\"></div>" +
         '<div><span class="field-label">Wertungsrichtung</span>' +
         '<div class="direction-toggle">' +
@@ -996,9 +998,9 @@
       "</div>" +
       '<div class="card"><h2>Event</h2>' +
       '<div class="field-grid">' +
-      '<div><span class="field-label">Titel</span><input type="text" value="' + esc(state.eventTitle || "") + '" oninput="onEventField(\'eventTitle\', this.value)"></div>' +
-      '<div><span class="field-label">Untertitel</span><input type="text" value="' + esc(state.eventSub || "") + '" oninput="onEventField(\'eventSub\', this.value)"></div>' +
-      '<div><span class="field-label">Datum</span><input type="text" value="' + esc(state.eventDate || "") + '" placeholder="z. B. 12.09.2026" oninput="onEventField(\'eventDate\', this.value)"></div>' +
+      '<div><span class="field-label">Titel</span><input type="text" id="event-title-input" value="' + esc(state.eventTitle || "") + '" oninput="onEventField(\'eventTitle\', this.value)"></div>' +
+      '<div><span class="field-label">Untertitel</span><input type="text" id="event-sub-input" value="' + esc(state.eventSub || "") + '" oninput="onEventField(\'eventSub\', this.value)"></div>' +
+      '<div><span class="field-label">Datum</span><input type="text" id="event-date-input" value="' + esc(state.eventDate || "") + '" placeholder="z. B. 12.09.2026" oninput="onEventField(\'eventDate\', this.value)"></div>' +
       "</div></div>" +
       '<div class="card"><h2>Spieler</h2>' +
       '<p class="muted">Spieler melden sich normalerweise selbst mit Vor- und Nachname an – du musst hier nichts eintragen. Diese Liste ist zum Nachpflegen: Tippfehler korrigieren, Duplikate entfernen oder jemanden manuell hinzufügen.</p>' +
@@ -1011,7 +1013,7 @@
       '<div class="card"><h2>Spiele</h2>' + gameRows +
       '<button class="btn add-row" onclick="addGame()">+ Spiel hinzufügen</button>' +
       "</div>" +
-      '<button class="btn btn-primary btn-block" onclick="saveSetup()" ' + (ui.saving ? "disabled" : "") + ">" + (ui.saving ? "Speichere …" : "Änderungen speichern") + "</button>";
+      '<p class="muted save-status" id="setup-save-status">Änderungen werden automatisch gespeichert.</p>';
   }
 
   // ---------- boot ----------
