@@ -380,6 +380,7 @@
     gateFirst: "",
     gateLast: "",
     adminCodeInput: "",
+    bulkAddText: "",
     saving: false,
     loaded: false,
     loadError: "",
@@ -489,6 +490,11 @@
     if (pollTimer) return;
     pollTimer = setInterval(function () {
       if (ui.saving) return;
+      // Don't clobber in-progress admin edits: a full background refresh rebuilds
+      // the whole tab from the server state, which would silently discard anything
+      // typed into Setup (new names, edited fields) or an open Eingabe game panel
+      // before it was saved.
+      if (role === "admin" && (ui.tab === "setup" || (ui.tab === "eingabe" && ui.openGameId))) return;
       loadState().then(function () { withFocusPreserved(render); }).catch(function () {});
     }, POLL_MS);
   }
@@ -697,11 +703,12 @@
     state.players.push({ id: uid("p"), name: "Spieler " + (state.players.length + 1) });
     render();
   };
+  window.onBulkAddText = function (val) { ui.bulkAddText = val; };
   window.addPlayersBulk = function () {
-    var ta = document.getElementById("bulk-add-textarea");
-    if (!ta) return;
-    var lines = ta.value.split("\n").map(function (s) { return s.trim(); }).filter(Boolean);
+    var lines = (ui.bulkAddText || "").split("\n").map(function (s) { return s.trim(); }).filter(Boolean);
+    if (!lines.length) return;
     lines.forEach(function (name) { state.players.push({ id: uid("p"), name: name }); });
+    ui.bulkAddText = "";
     render();
   };
   window.removePlayer = function (id) {
@@ -1037,7 +1044,7 @@
       '<div class="card"><h2>Spieler</h2>' +
       '<p class="muted">Spieler melden sich normalerweise selbst mit Vor- und Nachname an – du musst hier nichts eintragen. Diese Liste ist zum Nachpflegen: Tippfehler korrigieren, Duplikate entfernen oder jemanden manuell hinzufügen.</p>' +
       '<div class="field-grid" style="margin-top:0.7rem;"><div><span class="field-label">Mehrere Namen auf einmal hinzufügen (ein Name pro Zeile)</span>' +
-      '<textarea id="bulk-add-textarea" rows="4" placeholder="Anna Muster\nMax Mustermann…"></textarea></div></div>' +
+      '<textarea id="bulk-add-textarea" rows="4" placeholder="Anna Muster\nMax Mustermann…" oninput="onBulkAddText(this.value)">' + esc(ui.bulkAddText) + '</textarea></div></div>' +
       '<button class="btn add-row" onclick="addPlayersBulk()">Namen hinzufügen</button>' +
       (state.players.length ? '<div style="margin-top:0.9rem;">' + playerRows + "</div>" : '<p class="muted" style="margin-top:0.7rem;">Noch keine Spieler.</p>') +
       '<button class="btn add-row" onclick="addPlayer()">+ Einzelnen Spieler hinzufügen</button>' +
