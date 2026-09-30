@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<title>Saisonabschluss-Olympiade Scoreboard</title>
+<title>Tennis-Olympiade</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@400;500;600;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
@@ -294,13 +294,62 @@
 
   footer.note { text-align: center; color: var(--text-muted); font-size: 0.78rem; padding: 1.4rem 1rem 0.4rem; }
   .add-row { margin-top: 0.6rem; }
+  .loading { padding: 2.5rem 1rem; text-align: center; color: var(--text-muted); }
+  .draw-card { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+  .draw-cell { flex: 1 1 8rem; min-width: 0; background: var(--surface-2); border: 1px solid var(--border); border-radius: 0.7rem; padding: 0.7rem 0.8rem; }
+  .draw-cell .k { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); }
+  .draw-cell .v { font-family: "Anton", sans-serif; font-size: 1.5rem; margin-top: 0.15rem; }
+  .draw-cell .v small { font-family: "Manrope", sans-serif; font-size: 0.8rem; color: var(--text-muted); margin-left: 0.3rem; }
+  .game-block-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin: 1.2rem 0 0.5rem; font-weight: 700; }
+  .pgame { border: 1px solid var(--border); border-radius: 0.8rem; padding: 0.85rem 0.9rem; margin-bottom: 0.6rem; background: var(--surface); }
+  .pgame-head { display: flex; justify-content: space-between; align-items: baseline; gap: 0.6rem; }
+  .pgame-head h3 { font-size: 1.02rem; }
+  .pts-chip { flex: none; font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 0.85rem; padding: 0.15rem 0.55rem; border-radius: 999px; background: var(--accent-soft); color: var(--accent-ink); font-variant-numeric: tabular-nums; }
+  :root[data-theme="dark"] .pts-chip, :root:not([data-theme="light"]) .pts-chip { color: var(--accent); }
+  .pts-chip.empty { background: var(--surface-2); color: var(--text-muted); font-weight: 500; }
+  .hint { font-size: 0.84rem; color: var(--text-muted); margin: 0.35rem 0 0.55rem; line-height: 1.45; }
+  .input-line { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+  .input-line input[type="number"] { width: 7rem; flex: none; text-align: right; font-family: "JetBrains Mono", monospace; }
+  .input-line .unit { font-size: 0.82rem; color: var(--text-muted); }
+  .chip-btn { border: 1px solid var(--border); background: var(--surface); color: var(--text-muted); border-radius: 999px; padding: 0.4rem 0.75rem; font-size: 0.8rem; font-weight: 700; cursor: pointer; }
+  .chip-btn.on { background: var(--clay-soft); color: var(--clay); border-color: var(--clay); }
+  .err { color: var(--danger); font-size: 0.8rem; margin-top: 0.35rem; }
+  .lock-note { font-size: 0.8rem; color: var(--clay); font-weight: 700; margin-top: 0.4rem; }
+  details.rules { margin-top: 0.55rem; }
+  details.rules summary { cursor: pointer; font-size: 0.82rem; font-weight: 700; color: var(--text-muted); list-style: none; }
+  details.rules summary::-webkit-details-marker { display: none; }
+  details.rules summary::before { content: "▸ "; }
+  details.rules[open] summary::before { content: "▾ "; }
+  details.rules p, details.rules li { font-size: 0.85rem; line-height: 1.5; color: var(--text); }
+  details.rules p { margin: 0.45rem 0 0; }
+  details.rules ul { margin: 0.4rem 0 0; padding-left: 1.1rem; }
+  .plan { margin-top: 0.5rem; font-family: "JetBrains Mono", monospace; font-size: 0.78rem; background: var(--surface-2); border-radius: 0.5rem; padding: 0.5rem 0.65rem; overflow-x: auto; white-space: pre; color: var(--text); }
+  .court-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: 0.6rem; margin-top: 0.7rem; }
+  .court { background: var(--surface-2); border: 1px solid var(--border); border-radius: 0.7rem; padding: 0.7rem; min-width: 0; }
+  .court h3 { font-size: 0.95rem; margin-bottom: 0.4rem; }
+  .court ol { margin: 0; padding-left: 1.4rem; font-size: 0.86rem; line-height: 1.55; }
+  .btn-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.7rem; }
+  .btn-row .btn { flex: 1 1 10rem; }
+  .btn-danger { color: var(--danger); border-color: var(--danger); }
+  .confirm { background: var(--clay-soft); border: 1px solid var(--clay); border-radius: 0.6rem; padding: 0.7rem; margin-top: 0.7rem; font-size: 0.86rem; color: var(--text); }
+  .admin-entry { display: flex; align-items: center; gap: 0.5rem; padding: 0.45rem 0; border-bottom: 1px dashed var(--border); flex-wrap: wrap; }
+  .admin-entry:last-of-type { border-bottom: none; }
+  .admin-entry .name { flex: 1 1 8rem; min-width: 0; font-weight: 600; font-size: 0.92rem; }
+  .admin-entry input[type="number"] { width: 6rem; text-align: right; font-family: "JetBrains Mono", monospace; }
+  .admin-entry .pts-chip { min-width: 3.4rem; text-align: center; }
+  .toggle-line { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; margin: 0.6rem 0; }
+  .tag { display: inline-block; font-size: 0.7rem; font-weight: 700; padding: 0.1rem 0.45rem; border-radius: 999px; background: var(--surface-2); color: var(--text-muted); border: 1px solid var(--border); margin-left: 0.35rem; vertical-align: middle; }
+  .tag.locked { background: var(--clay-soft); color: var(--clay); border-color: var(--clay); }
+  .setup-game { border: 1px solid var(--border); border-radius: 0.7rem; padding: 0.7rem; margin-bottom: 0.6rem; background: var(--surface-2); }
+  .setup-game .field-grid { margin-top: 0.4rem; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 </head>
 <body>
 <header class="top">
   <div class="top-row">
     <div>
-      <h1 id="event-title-display">Saisonabschluss-Olympiade</h1>
+      <h1 id="event-title-display">Tennis-Olympiade</h1>
       <div class="sub" id="event-sub-display">Live-Scoreboard</div>
       <div class="event-meta">
         <span class="pill" id="event-date-pill">📅 Datum offen</span>
@@ -311,765 +360,418 @@
     <img class="club-logo" src="/logo.png" alt="RTC Tennisclub Logo">
   </div>
 </header>
-
 <div id="app-root"><main><p class="muted center" style="padding-top:2rem;">Lade …</p></main></div>
-
 <script>
 (function () {
   "use strict";
 
-  var API_BASE = "";
   var POLL_MS = 7000;
+  var NOTE_SEVEN = "Bei 7 Spieler:innen übernimmt jemand, der gerade frei ist, die fehlende Nr. 8. Gewertet werden nur die eigenen Matches.";
 
-  function lsGet(key) { try { return localStorage.getItem(key); } catch (e) { return null; } }
-  function lsSet(key, val) { try { localStorage.setItem(key, val); } catch (e) {} }
-  function lsDel(key) { try { localStorage.removeItem(key); } catch (e) {} }
-
-  function uid(prefix) {
-    return prefix + "_" + Math.random().toString(36).slice(2, 8) + Date.now().toString(36).slice(-4);
-  }
-
-  async function api(path, opts) {
-    opts = opts || {};
-    var res = await fetch(API_BASE + path, {
-      method: opts.method || "GET",
-      headers: opts.body ? { "Content-Type": "application/json" } : undefined,
-      body: opts.body ? JSON.stringify(opts.body) : undefined,
-    });
-    var data = null;
-    try { data = await res.json(); } catch (e) {}
-    if (!res.ok) {
-      var err = new Error((data && data.message) || (data && data.error) || ("HTTP " + res.status));
-      err.code = data && data.error;
-      err.status = res.status;
-      throw err;
-    }
-    return data;
-  }
-
-  // state.players / state.games mirror the API shape 1:1 (games carry their own .entries map).
-  var state = { eventTitle: "Saisonabschluss-Olympiade", eventSub: "Live-Scoreboard", eventDate: "", players: [], games: [] };
-
-  var role = null; // null = gate, 'admin', 'player'
-  var currentPlayerId = null;
-  var adminCode = lsGet("to_admin_code") || "";
-  if (adminCode) role = "admin";
-  else {
-    var savedPid = lsGet("to_player_id");
-    if (savedPid) { role = "player"; currentPlayerId = savedPid; }
-  }
-
-  var ui = {
-    tab: sessionStorage.getItem("to_activeTab") || "rangliste",
-    openGameId: sessionStorage.getItem("to_openGame") || null,
-    filterText: "",
-    lbFilterText: "",
-    gateMode: "picker",
-    gateFilter: "",
-    gateError: "",
-    gateFirst: "",
-    gateLast: "",
-    adminCodeInput: "",
-    bulkAddText: "",
-    saving: false,
-    loaded: false,
-    loadError: "",
-  };
-
-  // ---------- scoring (unchanged) ----------
-  function computeGamePoints(game, players) {
-    var entries = [];
-    players.forEach(function (p) {
-      var v = game.entries ? game.entries[p.id] : undefined;
-      if (v !== undefined && v !== null && v !== "") entries.push({ playerId: p.id, value: Number(v) });
-    });
-    var n = entries.length;
-    var points = {};
-    if (n === 0) return points;
-    entries.sort(function (a, b) {
-      return game.direction === "low" ? a.value - b.value : b.value - a.value;
-    });
-    var i = 0;
-    while (i < entries.length) {
-      var j = i;
-      while (j + 1 < entries.length && entries[j + 1].value === entries[i].value) j++;
-      var pts = [];
-      for (var k = i; k <= j; k++) pts.push(n + 1 - (k + 1));
-      var avg = pts.reduce(function (a, b) { return a + b; }, 0) / pts.length;
-      for (var k2 = i; k2 <= j; k2++) points[entries[k2].playerId] = avg;
-      i = j + 1;
-    }
-    return points;
-  }
-
-  function computeTotals() {
-    var totals = {};
-    state.players.forEach(function (p) { totals[p.id] = 0; });
-    state.games.forEach(function (g) {
-      var pts = computeGamePoints(g, state.players);
-      Object.keys(pts).forEach(function (pid) { totals[pid] = (totals[pid] || 0) + pts[pid]; });
-    });
-    return totals;
-  }
-
-  function rankedPlayers() {
-    var totals = computeTotals();
-    var arr = state.players.map(function (p) { return { id: p.id, name: p.name, total: totals[p.id] || 0 }; });
-    arr.sort(function (a, b) { return b.total - a.total; });
-    var rank = 0, prevTotal = null, seen = 0;
-    arr.forEach(function (p) {
-      seen++;
-      if (p.total !== prevTotal) { rank = seen; prevTotal = p.total; }
-      p.rank = rank;
-    });
-    return arr;
-  }
-
+  // ---------- helpers ----------
+  function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  function lsDel(k) { try { localStorage.removeItem(k); } catch (e) {} }
+  function ssGet(k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } }
+  function ssSet(k, v) { try { sessionStorage.setItem(k, v); } catch (e) {} }
   function esc(s) {
     return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
       return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
     });
   }
-  function fmtPts(n) {
-    return (Math.round(n * 10) / 10).toString().replace(".", ",");
+  function fmt(n) { return (Math.round(n * 10) / 10).toFixed(1).replace(".", ","); }
+  function normName(s) { return String(s || "").replace(/\s+/g, " ").trim().toLowerCase(); }
+
+  async function api(path, body) {
+    var res = await fetch(path, {
+      method: body ? "POST" : "GET",
+      headers: body ? { "Content-Type": "application/json" } : undefined,
+      body: body ? JSON.stringify(body) : undefined,
+      cache: "no-store"
+    });
+    var data = null;
+    try { data = await res.json(); } catch (e) {}
+    if (!res.ok) {
+      var err = new Error((data && data.message) || ("HTTP " + res.status));
+      err.code = data && data.error; err.status = res.status;
+      throw err;
+    }
+    return data;
   }
 
-  // ---------- focus-preserving render ----------
-  function withFocusPreserved(fn) {
-    var active = document.activeElement;
-    var activeId = active && active.id;
-    var selStart = null, selEnd = null;
-    if (active && "selectionStart" in active) {
-      try { selStart = active.selectionStart; selEnd = active.selectionEnd; } catch (e) {}
+  // ---------- state ----------
+  var state = { eventTitle: "Tennis-Olympiade", eventSub: "", eventDate: "", players: [], games: [] };
+  var loaded = false, loadError = "";
+  var adminCode = lsGet("to_admin_code") || "";
+  var role = adminCode ? "admin" : null;
+  var currentPlayerId = role ? null : lsGet("to_player_id");
+  if (currentPlayerId) role = "player";
+
+  var ui = {
+    tab: ssGet("to_tab") || "rangliste",
+    openGame: ssGet("to_game") || "",
+    gateMode: "register", gateError: "", gateFirst: "", gateLast: "", gateFilter: "", codeInput: "",
+    busy: false, errors: {}, drafts: {}, pending: 0, confirm: "", lbFilter: "", saveMsg: ""
+  };
+
+  function playerById(id) { return state.players.find(function (p) { return p.id === id; }); }
+  function gameById(id) { return state.games.find(function (g) { return g.id === id; }); }
+  function resultOf(g, pid) { return g.entries ? g.entries[pid] : undefined; }
+  function hasResult(v) { return v === "foul" || typeof v === "number"; }
+
+  // ---------- scoring: rank over all entries, 1st = 10, last = 1, ties share the average rank ----------
+  function gamePoints(game) {
+    var entries = [], out = {};
+    state.players.forEach(function (p) {
+      var v = resultOf(game, p.id);
+      if (v === "foul") out[p.id] = 0;
+      else if (typeof v === "number" && isFinite(v)) entries.push({ id: p.id, v: v });
+    });
+    var n = entries.length;
+    entries.sort(function (a, b) { return game.direction === "low" ? a.v - b.v : b.v - a.v; });
+    var i = 0;
+    while (i < n) {
+      var j = i;
+      while (j + 1 < n && entries[j + 1].v === entries[i].v) j++;
+      var avgRank = (i + j) / 2 + 1;
+      var pts = n === 1 ? 10 : 10 - 9 * (avgRank - 1) / (n - 1);
+      for (var k = i; k <= j; k++) out[entries[k].id] = pts;
+      i = j + 1;
     }
-    fn();
+    return out;
+  }
+  function allPoints() {
+    var per = {}, totals = {};
+    state.games.forEach(function (g) { per[g.id] = gamePoints(g); });
+    state.players.forEach(function (p) {
+      var t = 0;
+      state.games.forEach(function (g) { if (per[g.id][p.id] !== undefined) t += per[g.id][p.id]; });
+      totals[p.id] = t;
+    });
+    return { per: per, totals: totals };
+  }
+
+  // ---------- loading & polling ----------
+  function applyState(s) {
+    if (!s) return;
+    state = s;
+    loaded = true; loadError = "";
+    if (role === "player" && !playerById(currentPlayerId)) { role = null; currentPlayerId = null; lsDel("to_player_id"); }
+  }
+  function load() {
+    return api("/api/state").then(function (s) { applyState(s); render(); }).catch(function (e) {
+      if (!loaded) { loadError = e.message; render(); }
+    });
+  }
+  function userIsTyping() {
+    var el = document.activeElement;
+    return !!(el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA"));
+  }
+  setInterval(function () {
+    if (ui.pending > 0 || ui.busy || userIsTyping()) return;
+    if (role === "admin" && ui.tab === "setup") return;
+    load();
+  }, POLL_MS);
+
+  // ---------- saving results (debounced per field) ----------
+  var timers = {};
+  function queueSave(pid, gid, value) {
+    var key = pid + ":" + gid;
+    if (timers[key]) clearTimeout(timers[key]);
+    timers[key] = setTimeout(function () {
+      delete timers[key];
+      ui.pending++;
+      api("/api/entry", { gameId: gid, playerId: pid, value: value, code: role === "admin" ? adminCode : undefined })
+        .then(function (r) {
+          ui.pending--; ui.saveMsg = "";
+          if (ui.pending === 0 && !Object.keys(timers).length) { ui.drafts = {}; applyState(r.state); }
+          render();
+        })
+        .catch(function (e) {
+          ui.pending--;
+          ui.errors[key] = e.message || "Speichern hat nicht geklappt.";
+          render();
+        });
+    }, 700);
+  }
+
+  // ---------- render ----------
+  function render() {
+    var active = document.activeElement, activeId = active && active.id, s = null, e2 = null;
+    if (active && "selectionStart" in active) { try { s = active.selectionStart; e2 = active.selectionEnd; } catch (x) {} }
+    renderInner();
     if (activeId) {
       var el = document.getElementById(activeId);
-      if (el) {
-        el.focus();
-        if (selStart != null && "setSelectionRange" in el) {
-          try { el.setSelectionRange(selStart, selEnd); } catch (e) {}
-        }
-      }
+      if (el) { el.focus(); if (s != null) { try { el.setSelectionRange(s, e2); } catch (x) {} } }
     }
   }
 
-  function stashUi() {
-    try {
-      sessionStorage.setItem("to_activeTab", ui.tab);
-      sessionStorage.setItem("to_openGame", ui.openGameId || "");
-    } catch (e) {}
-  }
-
-  function applyServerState(fresh) {
-    state.eventTitle = fresh.eventTitle;
-    state.eventSub = fresh.eventSub;
-    state.eventDate = fresh.eventDate;
-    state.players = fresh.players;
-    state.games = fresh.games;
-  }
-
-  async function loadState() {
-    var fresh = await api("/api/state");
-    applyServerState(fresh);
-  }
-
-  // ---------- background refresh so other people's entries show up ----------
-  var pollTimer = null;
-  function hasFocusedEntryInput() {
-    // Entry-row inputs (player self-entry and admin Eingabe rows) have no id,
-    // so withFocusPreserved() can't restore focus/cursor on them after a full
-    // re-render - a poll landing mid-keystroke would silently drop focus and
-    // show the not-yet-saved field reverted to the old server value for a
-    // moment. Treat "actively typing into one" as its own no-clobber case.
-    var el = document.activeElement;
-    return !!(el && el.tagName === "INPUT" && el.closest && el.closest(".entry-row"));
-  }
-  function startPolling() {
-    if (pollTimer) return;
-    pollTimer = setInterval(function () {
-      if (ui.saving) return;
-      // Don't clobber in-progress admin edits: a full background refresh rebuilds
-      // the whole tab from the server state, which would silently discard anything
-      // typed into Setup (new names, edited fields) or an open Eingabe game panel
-      // before it was saved.
-      if (role === "admin" && (ui.tab === "setup" || (ui.tab === "eingabe" && ui.openGameId))) return;
-      if (hasFocusedEntryInput()) return;
-      loadState().then(function () { withFocusPreserved(render); }).catch(function () {});
-    }, POLL_MS);
-  }
-
-  // ---------- gate actions ----------
-  window.setGateMode = function (mode) {
-    ui.gateMode = mode;
-    ui.gateError = "";
-    render();
-  };
-  window.onGateFilter = function (val) {
-    ui.gateFilter = val;
-    withFocusPreserved(render);
-  };
-  window.onAdminCodeInput = function (val) {
-    ui.adminCodeInput = val;
-  };
-  window.submitAdminCode = function () {
-    if (ui.saving) return;
-    var code = (ui.adminCodeInput || "").trim();
-    if (!code) { ui.gateError = "Bitte Code eingeben."; render(); return; }
-    ui.saving = true;
-    ui.gateError = "";
-    render();
-    api("/api/admin", { method: "POST", body: { action: "login", code: code } })
-      .then(function () {
-        adminCode = code;
-        lsSet("to_admin_code", code);
-        role = "admin";
-        ui.saving = false;
-        render();
-      })
-      .catch(function (err) {
-        ui.saving = false;
-        ui.gateError = err.code === "wrong_code" ? "Code ist leider falsch." : ("Anmeldung fehlgeschlagen: " + err.message);
-        render();
-      });
-  };
-  window.selectPlayer = function (id) {
-    role = "player";
-    currentPlayerId = id;
-    lsSet("to_player_id", id);
-    render();
-  };
-  window.onGateFirst = function (val) { ui.gateFirst = val; };
-  window.onGateLast = function (val) { ui.gateLast = val; };
-  window.registerPlayer = function () {
-    if (ui.saving) return;
-    var first = (ui.gateFirst || "").trim();
-    var last = (ui.gateLast || "").trim();
-    if (!first || !last) {
-      ui.gateError = "Bitte Vor- und Nachnamen eingeben.";
-      render();
+  function renderInner() {
+    document.title = state.eventTitle || "Tennis-Olympiade";
+    document.getElementById("event-title-display").textContent = state.eventTitle || "Tennis-Olympiade";
+    document.getElementById("event-sub-display").textContent = state.eventSub || "";
+    document.getElementById("event-date-pill").textContent = "📅 " + (state.eventDate || "Datum offen");
+    document.getElementById("event-players-pill").textContent = state.players.length + " Spieler:innen";
+    document.getElementById("event-games-pill").textContent = state.games.length + " Spiele";
+    var root = document.getElementById("app-root");
+    if (!loaded) {
+      root.innerHTML = '<main><div class="loading">' + (loadError ? 'Die Ergebnisse konnten nicht geladen werden. Bitte Seite neu laden.' : 'Lade …') + '</div></main>';
       return;
     }
-    ui.saving = true;
-    ui.gateError = "";
-    render();
-    api("/api/register", { method: "POST", body: { firstName: first, lastName: last } })
-      .then(function (res) {
-        applyServerState(res.state);
-        role = "player";
-        currentPlayerId = res.playerId;
-        lsSet("to_player_id", res.playerId);
-        ui.saving = false;
-        ui.gateError = "";
-        render();
-      })
-      .catch(function (err) {
-        ui.saving = false;
-        ui.gateError = "Anmeldung fehlgeschlagen: " + err.message;
-        render();
-      });
-  };
-  window.switchPlayer = function () {
-    role = null;
-    currentPlayerId = null;
-    lsDel("to_player_id");
-    ui.gateMode = "picker";
-    render();
-  };
-  window.logoutAdmin = function () {
-    role = null;
-    adminCode = "";
-    lsDel("to_admin_code");
-    ui.gateMode = "picker";
-    render();
-  };
-
-  // ---------- entry saving ----------
-  var fieldTimers = {};
-  var ENTRY_AUTOSAVE_DELAY_MS = 1200;
-
-  function saveEntryNow(gameId, playerId, value) {
-    ui.saving = true;
-    var status = document.getElementById("player-save-status");
-    if (status) status.textContent = "Wird gespeichert …";
-    return api("/api/entry", { method: "POST", body: { gameId: gameId, playerId: playerId, value: value === "" ? null : Number(value) } })
-      .then(function (res) {
-        applyServerState(res.state);
-        ui.saving = false;
-        var el = document.getElementById("player-save-status");
-        if (el) el.textContent = "Änderungen werden automatisch gespeichert.";
-      })
-      .catch(function (err) {
-        ui.saving = false;
-        var el = document.getElementById("player-save-status");
-        if (el) el.textContent = "Speichern fehlgeschlagen: " + err.message;
-      });
+    if (role === "admin") renderAdmin(root);
+    else if (role === "player" && playerById(currentPlayerId)) renderPlayer(root);
+    else renderGate(root);
   }
 
-  window.onPlayerEntryInput = function (gameId, playerId, val) {
-    var g = state.games.find(function (g) { return g.id === gameId; });
-    if (g) { if (!g.entries) g.entries = {}; if (val === "") delete g.entries[playerId]; else g.entries[playerId] = Number(val); }
-    var key = gameId + "|" + playerId;
-    if (fieldTimers[key]) clearTimeout(fieldTimers[key]);
-    var status = document.getElementById("player-save-status");
-    if (status) status.textContent = "Ungespeicherte Änderung …";
-    fieldTimers[key] = setTimeout(function () {
-      delete fieldTimers[key];
-      saveEntryNow(gameId, playerId, val);
-    }, ENTRY_AUTOSAVE_DELAY_MS);
-  };
-
-  // ---------- eingabe actions (admin) ----------
-  window.toggleGame = function (id) {
-    if (ui.openGameId !== id) {
-      ui.filterText = "";
-    }
-    ui.openGameId = ui.openGameId === id ? null : id;
-    stashUi();
-    render();
-  };
-  window.onFilterInput = function (val) {
-    ui.filterText = val;
-    withFocusPreserved(render);
-  };
-  window.savePlayerEntries = function () {}; // kept as no-op: player view auto-saves per field now
-
-  // ---------- rangliste actions (admin) ----------
-  window.onLbFilter = function (val) {
-    ui.lbFilterText = val;
-    withFocusPreserved(render);
-  };
-
-  // ---------- tabs (admin) ----------
-  window.switchTab = function (tab) {
-    ui.tab = tab;
-    stashUi();
-    render();
-  };
-
-  // ---------- setup actions (admin only) ----------
-  // Everything in Setup autosaves - there is no "Speichern" button anywhere.
-  // Discrete actions (add/remove player or game, toggle direction) persist
-  // immediately; text fields (event info, names, units, admin code) debounce
-  // briefly after typing stops so we're not firing a request per keystroke.
-  var setupSaveTimer = null;
-  var setupSaveInFlight = false;
-  var setupSaveQueued = false;
-  var SETUP_AUTOSAVE_DELAY_MS = 1200;
-
-  function setSetupStatus(text) {
-    var el = document.getElementById("setup-save-status");
-    if (el) el.textContent = text;
-  }
-
-  function persistSetupNow() {
-    if (setupSaveTimer) { clearTimeout(setupSaveTimer); setupSaveTimer = null; }
-    // Setup saves fully replace the players/games lists server-side, so two
-    // overlapping requests must never both be in flight: a slow earlier
-    // request's response could otherwise land after a newer edit and stomp
-    // on it. If a save is already running, just flag that another is needed
-    // and re-run once the current one finishes, using whatever is in `state`
-    // at that point (i.e. every edit made in the meantime, untouched).
-    if (setupSaveInFlight) { setupSaveQueued = true; setSetupStatus("Ungespeicherte Änderung …"); return; }
-    setupSaveInFlight = true;
-    ui.saving = true;
-    setSetupStatus("Wird gespeichert …");
-    var payload = {
-      action: "save-setup",
-      code: adminCode,
-      eventTitle: state.eventTitle,
-      eventSub: state.eventSub,
-      eventDate: state.eventDate,
-      players: state.players.map(function (p) { return { id: p.id, name: p.name }; }),
-      games: state.games.map(function (g) { return { id: g.id, name: g.name, unit: g.unit, direction: g.direction }; }),
-    };
-    if (ui.newAdminCode && ui.newAdminCode.trim()) payload.adminCode = ui.newAdminCode.trim();
-    return api("/api/admin", { method: "POST", body: payload })
-      .then(function (res) {
-        setupSaveInFlight = false;
-        ui.saving = false;
-        if (setupSaveQueued) {
-          // Another save was explicitly triggered while this request was in
-          // flight: don't apply this (now-stale) response over it, just
-          // re-save the latest state right away.
-          setupSaveQueued = false;
-          persistSetupNow();
-          return;
-        }
-        if (setupSaveTimer) {
-          // A text field was edited while this request was in flight and is
-          // still sitting in its debounce window (no explicit save call was
-          // made for it yet). Applying this response would overwrite that
-          // not-yet-sent edit with the older server value, silently losing
-          // it. Leave `state` and the pending timer alone - it will send the
-          // up-to-date state itself shortly.
-          return;
-        }
-        state.eventTitle = res.state.eventTitle;
-        state.eventSub = res.state.eventSub;
-        state.eventDate = res.state.eventDate;
-        state.players = res.state.players;
-        state.games = res.state.games;
-        if (payload.adminCode) { adminCode = payload.adminCode; lsSet("to_admin_code", adminCode); ui.newAdminCode = ""; }
-        setSetupStatus("Änderungen werden automatisch gespeichert.");
-        withFocusPreserved(render);
-      })
-      .catch(function (err) {
-        setupSaveInFlight = false;
-        ui.saving = false;
-        if (err.code === "wrong_code") {
-          alert("Admin-Code stimmt nicht (mehr) - bitte neu anmelden.");
-          window.logoutAdmin();
-        } else if (setupSaveQueued) {
-          setupSaveQueued = false;
-          persistSetupNow();
-        } else {
-          setSetupStatus("Speichern fehlgeschlagen: " + err.message);
-        }
-      });
-  }
-
-  function scheduleSetupSave() {
-    setSetupStatus("Ungespeicherte Änderung …");
-    if (setupSaveTimer) clearTimeout(setupSaveTimer);
-    setupSaveTimer = setTimeout(function () {
-      setupSaveTimer = null;
-      persistSetupNow();
-    }, SETUP_AUTOSAVE_DELAY_MS);
-  }
-
-  window.onEventField = function (field, val) { state[field] = val; scheduleSetupSave(); };
-  window.addPlayer = function () {
-    state.players.push({ id: uid("p"), name: "Spieler " + (state.players.length + 1) });
-    render();
-    persistSetupNow();
-  };
-  window.onBulkAddText = function (val) { ui.bulkAddText = val; };
-  window.addPlayersBulk = function () {
-    var lines = (ui.bulkAddText || "").split("\n").map(function (s) { return s.trim(); }).filter(Boolean);
-    if (!lines.length) return;
-    lines.forEach(function (name) { state.players.push({ id: uid("p"), name: name }); });
-    ui.bulkAddText = "";
-    render();
-    persistSetupNow();
-  };
-  window.removePlayer = function (id) {
-    state.players = state.players.filter(function (p) { return p.id !== id; });
-    state.games.forEach(function (g) { if (g.entries) delete g.entries[id]; });
-    render();
-    persistSetupNow();
-  };
-  window.onPlayerName = function (id, val) {
-    var p = state.players.find(function (p) { return p.id === id; });
-    if (p) p.name = val;
-    scheduleSetupSave();
-  };
-  window.addGame = function () {
-    state.games.push({ id: uid("game"), name: "Neues Spiel", unit: "Punkte", direction: "high", entries: {} });
-    render();
-    persistSetupNow();
-  };
-  window.removeGame = function (id) {
-    state.games = state.games.filter(function (g) { return g.id !== id; });
-    render();
-    persistSetupNow();
-  };
-  window.onGameField = function (id, field, val) {
-    var g = state.games.find(function (g) { return g.id === id; });
-    if (g) g[field] = val;
-    scheduleSetupSave();
-  };
-  window.setDirection = function (id, dir) {
-    var g = state.games.find(function (g) { return g.id === id; });
-    if (g) g.direction = dir;
-    render();
-    persistSetupNow();
-  };
-  window.onNewAdminCode = function (val) { ui.newAdminCode = val; scheduleSetupSave(); };
-
-  // ---------- render: dispatch ----------
-  function render() {
-    document.getElementById("event-title-display").textContent = state.eventTitle || "Saisonabschluss-Olympiade";
-    document.getElementById("event-sub-display").textContent = state.eventSub || "Live-Scoreboard";
-    document.getElementById("event-date-pill").textContent = "📅 " + (state.eventDate ? state.eventDate : "Datum offen");
-    document.getElementById("event-players-pill").textContent = state.players.length + " Spieler";
-    document.getElementById("event-games-pill").textContent = state.games.length + " Spiele";
-
-    if (role === "admin") renderAdminApp();
-    else if (role === "player") renderPlayerApp();
-    else renderGate();
-  }
-
-  // ---------- gate screen ----------
-  function renderGate() {
+  // ---------- gate ----------
+  function renderGate(root) {
     var html;
     if (ui.gateMode === "admin") {
-      html = '<div class="card"><h2>Admin-Zugang</h2>' +
-        '<p class="muted">Code eingeben, um Setup und alle Ergebnisse zu bearbeiten.</p>' +
-        '<input type="text" id="admin-code-input" placeholder="Admin-Code" value="' + esc(ui.adminCodeInput) + '" ' + (ui.saving ? "disabled " : "") + 'oninput="onAdminCodeInput(this.value)">' +
-        (ui.gateError ? '<p class="muted" style="color:var(--danger);margin-top:0.5rem;">' + esc(ui.gateError) + "</p>" : "") +
-        '<button class="btn btn-primary btn-block add-row" onclick="submitAdminCode()" ' + (ui.saving ? "disabled" : "") + ">" + (ui.saving ? "Prüfe …" : "Bestätigen") + "</button>" +
-        '<button class="btn btn-block add-row" onclick="setGateMode(\'picker\')">Zurück zur Spielerauswahl</button>' +
-        "</div>";
+      html = '<div class="card"><h2>Admin-Zugang</h2><p class="muted">Code eingeben, um Rangliste, Ergebnisse und Setup zu sehen.</p>' +
+        '<form onsubmit="event.preventDefault();TO.submitCode();" class="field-grid">' +
+        '<input type="text" id="admin-code" autocomplete="off" placeholder="Admin-Code" value="' + esc(ui.codeInput) + '" oninput="TO.set(\'codeInput\', this.value)">' +
+        (ui.gateError ? '<p class="err">' + esc(ui.gateError) + '</p>' : '') +
+        '<button class="btn btn-primary btn-block" type="submit" ' + (ui.busy ? 'disabled' : '') + '>' + (ui.busy ? 'Prüfe …' : 'Entsperren') + '</button></form>' +
+        '<button class="btn btn-block add-row" onclick="TO.gate(\'register\')">Zurück</button></div>';
     } else {
-      var regBlock = '<div class="card"><h2>Anmelden</h2>' +
-        '<p class="muted">Trag deinen Namen ein, um eigene Ergebnisse einzutragen. Beim ersten Mal legt das automatisch deinen Platz in der Liste an.</p>' +
-        '<div class="field-grid">' +
-        '<div><span class="field-label">Vorname</span><input type="text" id="gate-first-input" value="' + esc(ui.gateFirst) + '" ' + (ui.saving ? "disabled " : "") + 'oninput="onGateFirst(this.value)"></div>' +
-        '<div><span class="field-label">Nachname</span><input type="text" id="gate-last-input" value="' + esc(ui.gateLast) + '" ' + (ui.saving ? "disabled " : "") + 'oninput="onGateLast(this.value)"></div>' +
-        "</div>" +
-        (ui.gateError ? '<p class="muted" style="color:var(--danger);margin-top:0.6rem;">' + esc(ui.gateError) + "</p>" : "") +
-        '<button class="btn btn-primary btn-block add-row" onclick="registerPlayer()" ' + (ui.saving ? "disabled" : "") + ">" + (ui.saving ? "Wird angemeldet …" : "Anmelden") + "</button>" +
-        "</div>";
-
-      var pickBlock = "";
-      if (state.players.length) {
-        var filterLower = (ui.gateFilter || "").trim().toLowerCase();
-        var visible = state.players.filter(function (p) { return !filterLower || p.name.toLowerCase().indexOf(filterLower) !== -1; });
-        var rows = visible.slice().sort(function (a, b) { return a.name.localeCompare(b.name, "de"); }).map(function (p) {
-          return '<button class="btn btn-block btn-pick add-row" onclick="selectPlayer(\'' + p.id + "')\">" + esc(p.name) + "</button>";
-        }).join("");
-        pickBlock = '<div class="card"><h2>Schon angemeldet?</h2>' +
-          '<p class="muted">Falls du dich schon einmal angemeldet hast, tipp einfach deinen Namen an, statt dich neu einzutragen.</p>' +
-          (state.players.length > 8 ? '<input type="search" id="gate-filter-input" placeholder="Suchen…" value="' + esc(ui.gateFilter) + '" oninput="onGateFilter(this.value)" style="margin-bottom:0.6rem;">' : "") +
-          (visible.length ? rows : '<p class="muted">Keine Treffer.</p>') +
-          "</div>";
+      var list = state.players.slice().sort(function (a, b) { return a.name.localeCompare(b.name, "de"); });
+      var f = normName(ui.gateFilter);
+      var vis = list.filter(function (p) { return !f || normName(p.name).indexOf(f) !== -1; });
+      html = '<div class="card"><h2>Anmelden</h2><p class="muted">Einmal mit Vor- und Nachname anmelden. Danach trägst du nach jedem Spiel dein Ergebnis selbst ein.</p>' +
+        '<form onsubmit="event.preventDefault();TO.register();" class="field-grid">' +
+        '<div><label class="field-label" for="gate-first">Vorname</label><input type="text" id="gate-first" autocomplete="given-name" value="' + esc(ui.gateFirst) + '" oninput="TO.set(\'gateFirst\', this.value)"></div>' +
+        '<div><label class="field-label" for="gate-last">Nachname</label><input type="text" id="gate-last" autocomplete="family-name" value="' + esc(ui.gateLast) + '" oninput="TO.set(\'gateLast\', this.value)"></div>' +
+        (ui.gateError ? '<p class="err">' + esc(ui.gateError) + '</p>' : '') +
+        '<button class="btn btn-primary btn-block" type="submit" ' + (ui.busy ? 'disabled' : '') + '>' + (ui.busy ? 'Wird angemeldet …' : 'Anmelden') + '</button></form></div>';
+      if (list.length) {
+        html += '<div class="card"><h2>Schon angemeldet?</h2><p class="muted">Tipp deinen Namen an, zum Beispiel auf einem neuen Handy.</p>' +
+          (list.length > 8 ? '<input type="search" id="gate-filter" placeholder="Name suchen …" value="' + esc(ui.gateFilter) + '" oninput="TO.set(\'gateFilter\', this.value, true)" style="margin-bottom:0.4rem;">' : '') +
+          (vis.length ? vis.map(function (p) { return '<button class="btn btn-block btn-pick add-row" onclick="TO.pick(\'' + esc(p.id) + '\')">' + esc(p.name) + '</button>'; }).join('') : '<p class="muted">Keine Treffer.</p>') +
+          '</div>';
       }
-
-      html = regBlock + pickBlock + '<p class="muted center"><a href="#" onclick="setGateMode(\'admin\');return false;">Ich bin Admin</a></p>';
+      html += '<p class="muted center"><a href="#" onclick="TO.gate(\'admin\');return false;">Ich bin Admin</a></p>';
     }
-    document.getElementById("app-root").innerHTML = '<main>' + html + "</main>";
+    root.innerHTML = '<main>' + html + '</main>';
   }
 
-  // ---------- player app ----------
-  function renderPlayerApp() {
-    var player = state.players.find(function (p) { return p.id === currentPlayerId; });
-    if (!player) {
-      role = null;
-      currentPlayerId = null;
-      lsDel("to_player_id");
-      renderGate();
-      return;
-    }
-    var rows = state.games.map(function (g) {
-      var val = g.entries && g.entries[player.id] !== undefined ? g.entries[player.id] : "";
-      return '<div class="entry-row">' +
-        '<div class="name">' + esc(g.name) + "</div>" +
-        '<input type="number" inputmode="decimal" step="any" value="' + esc(val) + '" ' +
-        'oninput="onPlayerEntryInput(\'' + g.id + "', '" + player.id + "', this.value)\">" +
-        '<div class="unit">' + esc(g.unit || "") + "</div>" +
-        "</div>";
-    }).join("");
-
-    var html =
-      '<div class="card"><div class="whoami">' +
-      '<div><div class="muted">Angemeldet als</div><h2>' + esc(player.name) + "</h2></div>" +
-      "</div></div>" +
-      '<div class="card"><h2>Meine Ergebnisse</h2>' +
-      '<p class="muted">Trag deine eigenen Werte ein. Wart ihr als Paar/Gruppe unterwegs, trägt jede:r seinen Teil selbst ein.</p>' +
-      (state.games.length ? rows : '<p class="muted">Noch keine Spiele angelegt.</p>') +
-      (state.games.length ? '<p class="muted save-status" id="player-save-status">Änderungen werden automatisch gespeichert.</p>' : "") +
-      "</div>" +
-      '<p class="muted center"><a href="#" onclick="switchPlayer();return false;">Nicht ' + esc(player.name) + "? Spieler wechseln</a></p>" +
-      '<footer class="note">Saisonabschluss-Olympiade Scoreboard</footer>';
-
-    document.getElementById("app-root").innerHTML = '<main>' + html + "</main>";
+  // ---------- result input (shared by player and admin) ----------
+  function resultInput(g, pid, prefix, compact) {
+    var key = pid + ":" + g.id;
+    var val = resultOf(g, pid);
+    var locked = g.locked && role !== "admin";
+    var shown = ui.drafts[key] !== undefined ? ui.drafts[key] : (typeof val === "number" ? String(val).replace(".", ",") : "");
+    var isFoul = ui.drafts[key] === undefined && val === "foul";
+    var dis = locked ? "disabled " : "";
+    var h = '<div class="input-line">' +
+      '<input type="text" inputmode="decimal" id="' + prefix + '-' + esc(pid) + '-' + g.id + '" placeholder="–" aria-label="' + esc(g.name) + ' Ergebnis" ' + dis +
+      'value="' + (isFoul ? '' : esc(shown)) + '" oninput="TO.entry(\'' + esc(pid) + '\', \'' + g.id + '\', this.value)">' +
+      '<span class="unit">' + esc(g.unit) + '</span>';
+    if (g.foul) h += '<button class="chip-btn' + (isFoul ? ' on' : '') + '" ' + dis + 'onclick="TO.foul(\'' + esc(pid) + '\', \'' + g.id + '\')">Nur Fouls</button>';
+    h += '</div>';
+    if (ui.errors[key]) h += '<p class="err">' + esc(ui.errors[key]) + '</p>';
+    if (locked && !compact) h += '<p class="lock-note">Dieses Spiel ist abgeschlossen. Änderungen nur noch über den Admin.</p>';
+    return h;
+  }
+  function rulesBlock(g) {
+    return '<details class="rules"><summary>Regeln</summary><p>' + esc(g.rules) + '</p>' +
+      (g.plan ? '<div class="plan">Spielplan (nummeriert euch auf dem Platz von 1 bis 8)\n' + esc(g.plan) + '</div><p class="muted">' + esc(NOTE_SEVEN) + '</p>' : '') +
+      '</details>';
   }
 
-  // ---------- admin app ----------
-  function renderAdminApp() {
-    document.getElementById("app-root").innerHTML =
-      '<nav class="tabbar">' +
-      '<button data-tab="rangliste">Rangliste</button>' +
-      '<button data-tab="eingabe">Eingabe</button>' +
-      '<button data-tab="setup">Setup</button>' +
-      "</nav>" +
-      '<main>' +
-      '<section class="view" id="view-rangliste"></section>' +
-      '<section class="view" id="view-eingabe"></section>' +
-      '<section class="view" id="view-setup"></section>' +
-      '<footer class="note">Saisonabschluss-Olympiade Scoreboard · Punkte je Spiel = (Anzahl eingetragener Spieler + 1) − Platzierung</footer>' +
-      "</main>";
-
-    document.querySelectorAll("nav.tabbar button").forEach(function (b) {
-      b.classList.toggle("active", b.getAttribute("data-tab") === ui.tab);
-      b.addEventListener("click", function () { switchTab(b.getAttribute("data-tab")); });
+  // ---------- player ----------
+  function renderPlayer(root) {
+    var p = playerById(currentPlayerId);
+    var done = state.games.filter(function (g) { return hasResult(resultOf(g, p.id)); }).length;
+    var html = '<div class="card"><div class="whoami"><div><div class="muted">Angemeldet als</div><h2>' + esc(p.name) + '</h2></div>' +
+      '<div class="stat"><div class="muted">Eingetragen</div><div class="lb-total">' + done + '<span class="unit">von ' + state.games.length + '</span></div></div></div></div>' +
+      '<div class="game-block-label">Deine Spiele</div>';
+    state.games.forEach(function (g) {
+      var has = hasResult(resultOf(g, p.id));
+      html += '<div class="pgame"><div class="pgame-head"><h3>' + esc(g.name) + (g.locked ? '<span class="tag locked">abgeschlossen</span>' : '') + '</h3>' +
+        '<span class="pts-chip' + (has ? '' : ' empty') + '">' + (has ? 'eingetragen ✓' : 'offen') + '</span></div>' +
+        '<p class="hint">' + esc(g.hint) + '</p>' + resultInput(g, p.id, "me") + rulesBlock(g) + '</div>';
     });
-    document.getElementById("view-rangliste").classList.toggle("active", ui.tab === "rangliste");
-    document.getElementById("view-eingabe").classList.toggle("active", ui.tab === "eingabe");
-    document.getElementById("view-setup").classList.toggle("active", ui.tab === "setup");
-
-    renderRangliste();
-    renderEingabe();
-    renderSetup();
+    html += '<details class="explain card"><summary>Wie wird gewertet?</summary><p>Pro Spiel bilden alle Ergebnisse eine gemeinsame Rangliste über alle Teilnehmer:innen. Platz 1 bekommt 10 Punkte, der letzte Platz 1 Punkt, dazwischen wird gleichmäßig verteilt. Punkte und Platzierungen gibt es erst bei der Siegerehrung.</p></details>' +
+      '<p class="muted center">' + (ui.pending || Object.keys(timers).length ? 'Wird gespeichert …' : 'Eingaben werden automatisch gespeichert.') + '</p>' +
+      '<p class="muted center"><a href="#" onclick="TO.logout();return false;">Nicht ' + esc(p.name) + '? Abmelden</a></p>';
+    root.innerHTML = '<main>' + html + '</main>';
   }
 
-  function renderRangliste() {
-    var ranked = rankedPlayers();
-    var filterLower = (ui.lbFilterText || "").trim().toLowerCase();
-    var visibleRanked = filterLower ? ranked.filter(function (p) { return p.name.toLowerCase().indexOf(filterLower) !== -1; }) : ranked;
+  // ---------- admin ----------
+  function renderAdmin(root) {
+    var tabs = [["rangliste", "Rangliste"], ["eingabe", "Ergebnisse"], ["setup", "Setup"]];
+    if (!tabs.some(function (t) { return t[0] === ui.tab; })) ui.tab = "rangliste";
+    var html = '<nav class="tabbar">' + tabs.map(function (t) {
+      return '<button class="' + (ui.tab === t[0] ? 'active' : '') + '" onclick="TO.tab(\'' + t[0] + '\')">' + t[1] + '</button>';
+    }).join('') + '</nav><main>' + (ui.saveMsg ? '<div class="banner show">' + esc(ui.saveMsg) + '</div>' : '');
+    if (ui.tab === "eingabe") html += adminEntry();
+    else if (ui.tab === "setup") html += adminSetup();
+    else html += adminRanking();
+    html += '<p class="muted center" style="margin-top:1rem;"><a href="#" onclick="TO.logout();return false;">Admin abmelden</a></p></main>';
+    root.innerHTML = html;
+  }
 
-    var rows = visibleRanked.map(function (p) {
+  function adminRanking() {
+    var pts = allPoints();
+    var list = state.players.map(function (p) { return { id: p.id, name: p.name, total: pts.totals[p.id] || 0 }; })
+      .sort(function (a, b) { return b.total - a.total || a.name.localeCompare(b.name, "de"); });
+    var rank = 0, prev = null;
+    list.forEach(function (p, i) { if (p.total !== prev) { rank = i + 1; prev = p.total; } p.rank = rank; });
+    if (!list.length) return '<div class="card"><h2>Gesamtwertung</h2><p class="muted">Noch niemand angemeldet.</p></div>';
+    var f = normName(ui.lbFilter);
+    var vis = list.filter(function (p) { return !f || normName(p.name).indexOf(f) !== -1; });
+    var rows = vis.map(function (p) {
       var rc = p.rank === 1 ? "r1" : p.rank === 2 ? "r2" : p.rank === 3 ? "r3" : "";
-      return '<div class="lb-row">' +
-        '<div class="rank-badge ' + rc + '">' + p.rank + "</div>" +
-        '<div class="lb-name">' + esc(p.name) + "</div>" +
-        '<div class="lb-total">' + fmtPts(p.total) + '<span class="unit">Pkt</span></div>' +
-        "</div>";
-    }).join("");
-
-    var gameHeaders = state.games.map(function (g) { return "<th>" + esc(g.name) + "</th>"; }).join("");
-    var matrixRows = visibleRanked.map(function (p) {
-      var cells = state.games.map(function (g) {
-        var pts = computeGamePoints(g, state.players);
-        var v = pts[p.id];
-        return "<td>" + (v === undefined ? "–" : fmtPts(v)) + "</td>";
-      }).join("");
-      return "<tr><td>" + esc(p.name) + "</td>" + cells + '<td class="total-col">' + fmtPts(p.total) + "</td></tr>";
-    }).join("");
-
-    var filterBox = ranked.length > 8
-      ? '<input type="search" id="lb-filter-input" placeholder="Spieler suchen…" value="' + esc(ui.lbFilterText) + '" oninput="onLbFilter(this.value)" style="margin-bottom:0.7rem;">'
-      : "";
-
-    document.getElementById("view-rangliste").innerHTML =
-      '<div class="card">' +
-      "<h2>Gesamtwertung</h2>" +
-      filterBox +
-      (ranked.length ? (visibleRanked.length ? rows : '<p class="muted">Keine Treffer.</p>') : '<p class="muted">Noch keine Spieler angelegt – unter Setup Namen hinzufügen.</p>') +
-      "</div>" +
-      (ranked.length ? '<div class="card">' +
-        "<h2>Punkte je Spiel</h2>" +
-        '<div class="table-wrap"><table class="matrix"><thead><tr><th>Spieler</th>' + gameHeaders + '<th class="total-col">Gesamt</th></tr></thead><tbody>' +
-        matrixRows +
-        "</tbody></table></div>" +
-        '<div class="explain" style="margin-top:0.8rem;"><div class="explain-title">Wie funktioniert die Wertung?</div>' +
-        "<p>Bei jedem Spiel zählt nur die Platzierung, nicht die Rohzahl (Schläge, Meter, Sekunden, Siege …). " +
-        "Punkte je Spiel = (Anzahl eingetragener Spieler + 1) − Platzierung. Bei Gleichstand werden die Punkte der betroffenen Plätze gemittelt. " +
-        "Wird ein Spiel in zufälligen Paaren oder Gruppen gespielt, tragt einfach für jede Person denselben Wert unter „Eingabe“ ein – gewertet wird trotzdem für jede Person einzeln.</p></div>" +
-        "</div>" : "");
+      return '<div class="lb-row"><div class="rank-badge ' + rc + '">' + p.rank + '</div><div class="lb-name">' + esc(p.name) + '</div><div class="lb-total">' + fmt(p.total) + '<span class="unit">Pkt</span></div></div>';
+    }).join('');
+    var head = state.games.map(function (g) { return '<th>' + esc(g.name) + '</th>'; }).join('');
+    var body = vis.map(function (p) {
+      return '<tr><td>' + esc(p.name) + '</td>' + state.games.map(function (g) {
+        var v = pts.per[g.id][p.id]; return '<td class="mono">' + (v === undefined ? '–' : fmt(v)) + '</td>';
+      }).join('') + '<td class="total-col">' + fmt(p.total) + '</td></tr>';
+    }).join('');
+    return '<div class="card"><h2>Gesamtwertung</h2>' +
+      (list.length > 8 ? '<input type="search" id="lb-filter" placeholder="Name suchen …" value="' + esc(ui.lbFilter) + '" oninput="TO.set(\'lbFilter\', this.value, true)" style="margin-bottom:0.5rem;">' : '') +
+      rows + '</div>' +
+      '<div class="card"><h2>Punkte je Spiel</h2><div class="table-wrap"><table class="matrix"><thead><tr><th>Name</th>' + head + '<th class="total-col">Gesamt</th></tr></thead><tbody>' + body + '</tbody></table></div>' +
+      '<p class="muted" style="margin-top:0.6rem;">Pro Spiel: Platz 1 über alle = 10 Punkte, letzter Platz = 1 Punkt, gleichmäßig dazwischen. Gleichstand = Durchschnitt der Plätze. „Nur Fouls“ = 0 Punkte. Nur für Admins sichtbar.</p></div>';
   }
 
-  function renderEingabe() {
-    if (!state.players.length) {
-      document.getElementById("view-eingabe").innerHTML =
-        '<div class="card"><h2>Ergebnisse eintragen</h2><p class="muted">Noch keine Spieler angelegt – zuerst unter Setup Namen hinzufügen.</p></div>';
-      return;
-    }
-
-    var filterLower = (ui.filterText || "").trim().toLowerCase();
-
-    var items = state.games.map(function (g) {
-      var entered = state.players.filter(function (p) { return g.entries && g.entries[p.id] !== undefined && g.entries[p.id] !== null; }).length;
-      var complete = entered === state.players.length;
-      var open = ui.openGameId === g.id;
-      if (!open) {
-        return '<div class="game-item">' +
-          '<div class="game-item-head" onclick="toggleGame(\'' + g.id + "')\">" +
-          "<div><h3>" + esc(g.name) + "</h3>" +
-          '<div class="status ' + (complete ? "complete" : "") + '">' + entered + "/" + state.players.length + " Spieler eingetragen" + (complete ? " · komplett" : "") + "</div>" +
-          "</div><div class=\"chev\">▸</div></div></div>";
+  function adminEntry() {
+    var list = state.players.slice().sort(function (a, b) { return a.name.localeCompare(b.name, "de"); });
+    var pts = allPoints();
+    var html = '<div class="card"><h2>Ergebnisse</h2><p class="muted">Spieler:innen tragen selbst ein. Hier siehst du, wer noch fehlt, kannst korrigieren und ein Spiel abschließen. Danach können Spieler:innen es nicht mehr ändern.</p></div>';
+    state.games.forEach(function (g) {
+      var entered = list.filter(function (p) { return hasResult(resultOf(g, p.id)); }).length;
+      var open = ui.openGame === g.id;
+      html += '<div class="game-item' + (open ? ' open' : '') + '"><div class="game-item-head" onclick="TO.toggleGame(\'' + g.id + '\')"><div><h3>' + esc(g.name) +
+        (g.locked ? '<span class="tag locked">abgeschlossen</span>' : '') + '</h3><div class="status' + (list.length && entered === list.length ? ' complete' : '') + '">' + entered + ' von ' + list.length + ' eingetragen · ' + (g.direction === "low" ? 'weniger' : 'mehr') + ' ' + esc(g.unit) + ' ist besser</div></div><div class="chev">▸</div></div>';
+      if (open) {
+        html += '<div class="game-item-body"><div class="toggle-line"><span class="muted">' + (g.locked ? 'Abgeschlossen: Spieler:innen können nichts mehr ändern.' : 'Offen: Spieler:innen können eintragen.') + '</span>' +
+          '<button class="btn" onclick="TO.lock(\'' + g.id + '\')">' + (g.locked ? 'Wieder öffnen' : 'Abschließen') + '</button></div>';
+        var missing = list.filter(function (p) { return !hasResult(resultOf(g, p.id)); });
+        if (missing.length && missing.length < list.length) html += '<p class="hint"><strong>Fehlt noch:</strong> ' + missing.map(function (p) { return esc(p.name); }).join(', ') + '</p>';
+        html += list.map(function (p) {
+          var v = pts.per[g.id][p.id];
+          return '<div class="admin-entry"><div class="name">' + esc(p.name) + '</div>' + resultInput(g, p.id, "adm", true) + '<span class="pts-chip' + (v === undefined ? ' empty' : '') + '">' + (v === undefined ? '–' : fmt(v)) + '</span></div>';
+        }).join('') + (list.length ? '' : '<p class="muted">Noch niemand angemeldet.</p>') + '</div>';
       }
-
-      var visiblePlayers = state.players
-        .filter(function (p) { return !filterLower || p.name.toLowerCase().indexOf(filterLower) !== -1; })
-        .slice()
-        .sort(function (a, b) { return a.name.localeCompare(b.name, "de"); });
-
-      var rows = visiblePlayers.map(function (p) {
-        var val = g.entries && g.entries[p.id] !== undefined ? g.entries[p.id] : "";
-        return '<div class="entry-row">' +
-          '<div class="name">' + esc(p.name) + "</div>" +
-          '<input type="number" inputmode="decimal" step="any" value="' + esc(val) + '" ' +
-          'oninput="onPlayerEntryInput(\'' + g.id + "', '" + p.id + "', this.value)\">" +
-          '<div class="unit">' + esc(g.unit || "") + "</div>" +
-          "</div>";
-      }).join("");
-
-      return '<div class="game-item open">' +
-        '<div class="game-item-head" onclick="toggleGame(\'' + g.id + "')\">" +
-        "<div><h3>" + esc(g.name) + "</h3>" +
-        '<div class="status ' + (complete ? "complete" : "") + '">' + entered + "/" + state.players.length + " Spieler eingetragen" + (complete ? " · komplett" : "") + "</div>" +
-        "</div><div class=\"chev\">▸</div></div>" +
-        '<div class="game-item-body">' +
-        '<input type="search" id="filter-input" placeholder="Spieler suchen…" value="' + esc(ui.filterText) + '" oninput="onFilterInput(this.value)" style="margin-top:0.8rem;">' +
-        rows +
-        (!visiblePlayers.length ? '<p class="muted">Keine Treffer.</p>' : "") +
-        '<p class="muted save-status" id="player-save-status">Änderungen werden automatisch gespeichert.</p>' +
-        "</div></div>";
-    }).join("");
-
-    document.getElementById("view-eingabe").innerHTML =
-      '<div class="card"><h2>Ergebnisse eintragen</h2><p class="muted">Als Admin kannst du hier für alle eintragen. Spiel antippen und Werte direkt in der Liste eintragen – wird automatisch gespeichert.</p></div>' +
-      (state.games.length ? items : '<p class="muted">Noch keine Spiele angelegt – unter Setup hinzufügen.</p>');
-  }
-
-  function renderSetup() {
-    var playerRows = state.players.map(function (p) {
-      return '<div class="player-row">' +
-        '<input type="text" id="player-name-' + p.id + '" value="' + esc(p.name) + '" ' +
-        'oninput="onPlayerName(\'' + p.id + "', this.value)\">" +
-        '<button class="icon-btn" onclick="removePlayer(\'' + p.id + '\')" aria-label="Spieler entfernen">✕</button>' +
-        "</div>";
-    }).join("");
-
-    var gameRows = state.games.map(function (g) {
-      return '<div class="game-setup-card">' +
-        '<div class="row-top">' +
-        '<input type="text" id="game-name-' + g.id + '" value="' + esc(g.name) + '" ' +
-        'oninput="onGameField(\'' + g.id + "', 'name', this.value)\">" +
-        '<button class="icon-btn" onclick="removeGame(\'' + g.id + '\')" aria-label="Spiel entfernen">✕</button>' +
-        "</div>" +
-        '<div class="field-grid">' +
-        '<div><span class="field-label">Einheit (z. B. Schläge, cm, Punkte, Sek.)</span>' +
-        '<input type="text" id="game-unit-' + g.id + '" value="' + esc(g.unit || "") + '" ' +
-        'oninput="onGameField(\'' + g.id + "', 'unit', this.value)\"></div>" +
-        '<div><span class="field-label">Wertungsrichtung</span>' +
-        '<div class="direction-toggle">' +
-        '<button class="' + (g.direction === "low" ? "active" : "") + '" onclick="setDirection(\'' + g.id + "', 'low')\">weniger ist besser</button>" +
-        '<button class="' + (g.direction === "high" ? "active" : "") + '" onclick="setDirection(\'' + g.id + "', 'high')\">mehr ist besser</button>" +
-        "</div></div></div></div>";
-    }).join("");
-
-    document.getElementById("view-setup").innerHTML =
-      '<div class="card"><h2>Admin-Zugang</h2>' +
-      '<p class="muted">Angemeldet als Admin. <a href="#" onclick="logoutAdmin();return false;">Abmelden</a></p>' +
-      '<div class="field-grid"><div><span class="field-label">Neuer Admin-Code (leer lassen, um ihn nicht zu ändern)</span>' +
-      '<input type="text" id="new-admin-code-input" value="' + esc(ui.newAdminCode || "") + '" placeholder="unverändert lassen" oninput="onNewAdminCode(this.value)"></div></div>' +
-      '<p class="muted" style="margin-top:0.5rem;">Diesen Code gibst du an alle weiter, die im Setup mitbearbeiten dürfen sollen. Achtung: Das ist eine einfache Zugangssperre, kein echter Passwortschutz.</p>' +
-      "</div>" +
-      '<div class="card"><h2>Event</h2>' +
-      '<div class="field-grid">' +
-      '<div><span class="field-label">Titel</span><input type="text" id="event-title-input" value="' + esc(state.eventTitle || "") + '" oninput="onEventField(\'eventTitle\', this.value)"></div>' +
-      '<div><span class="field-label">Untertitel</span><input type="text" id="event-sub-input" value="' + esc(state.eventSub || "") + '" oninput="onEventField(\'eventSub\', this.value)"></div>' +
-      '<div><span class="field-label">Datum</span><input type="text" id="event-date-input" value="' + esc(state.eventDate || "") + '" placeholder="z. B. 12.09.2026" oninput="onEventField(\'eventDate\', this.value)"></div>' +
-      "</div></div>" +
-      '<div class="card"><h2>Spieler</h2>' +
-      '<p class="muted">Spieler melden sich normalerweise selbst mit Vor- und Nachname an – du musst hier nichts eintragen. Diese Liste ist zum Nachpflegen: Tippfehler korrigieren, Duplikate entfernen oder jemanden manuell hinzufügen.</p>' +
-      '<div class="field-grid" style="margin-top:0.7rem;"><div><span class="field-label">Mehrere Namen auf einmal hinzufügen (ein Name pro Zeile)</span>' +
-      '<textarea id="bulk-add-textarea" rows="4" placeholder="Anna Muster\nMax Mustermann…" oninput="onBulkAddText(this.value)">' + esc(ui.bulkAddText) + '</textarea></div></div>' +
-      '<button class="btn add-row" onclick="addPlayersBulk()">Namen hinzufügen</button>' +
-      (state.players.length ? '<div style="margin-top:0.9rem;">' + playerRows + "</div>" : '<p class="muted" style="margin-top:0.7rem;">Noch keine Spieler.</p>') +
-      '<button class="btn add-row" onclick="addPlayer()">+ Einzelnen Spieler hinzufügen</button>' +
-      "</div>" +
-      '<div class="card"><h2>Spiele</h2>' + gameRows +
-      '<button class="btn add-row" onclick="addGame()">+ Spiel hinzufügen</button>' +
-      "</div>" +
-      '<p class="muted save-status" id="setup-save-status">Änderungen werden automatisch gespeichert.</p>';
-  }
-
-  // ---------- boot ----------
-  loadState()
-    .then(function () {
-      ui.loaded = true;
-      render();
-      startPolling();
-    })
-    .catch(function (err) {
-      document.getElementById("app-root").innerHTML =
-        '<main><div class="card"><h2>Laden fehlgeschlagen</h2><p class="muted">' + esc(err.message) + '</p>' +
-        '<button class="btn btn-primary add-row" onclick="location.reload()">Erneut versuchen</button></div></main>';
+      html += '</div>';
     });
+    return html;
+  }
+
+  function adminSetup() {
+    var html = '<div class="card"><h2>Event</h2><div class="field-grid">' +
+      field("Titel", "cfg-title", state.eventTitle, "eventTitle") + field("Untertitel", "cfg-sub", state.eventSub, "eventSub") +
+      field("Datum", "cfg-date", state.eventDate, "eventDate") +
+      '<div><label class="field-label" for="cfg-code">Neuer Admin-Code (leer lassen = unverändert)</label><input type="text" id="cfg-code" autocomplete="off" value="" onchange="TO.newCode(this.value)"></div>' +
+      '</div><p class="muted" style="margin-top:0.5rem;">Änderungen werden gespeichert, sobald du ein Feld verlässt.</p></div>';
+    html += '<div class="card"><h2>Spiele</h2><p class="muted">Regeln und Eingabehinweise erscheinen so bei den Spieler:innen.</p>';
+    state.games.forEach(function (g) {
+      html += '<div class="setup-game"><strong>' + esc(g.name) + '</strong> <span class="tag">' + (g.direction === "low" ? 'weniger ist besser' : 'mehr ist besser') + '</span><span class="tag">' + g.min + '–' + g.max + ' ' + esc(g.unit) + '</span>' +
+        '<div class="field-grid"><div><label class="field-label" for="g-rules-' + g.id + '">Regeln</label><textarea id="g-rules-' + g.id + '" rows="4" onchange="TO.gameText(\'' + g.id + '\', \'rules\', this.value)">' + esc(g.rules) + '</textarea></div>' +
+        '<div><label class="field-label" for="g-hint-' + g.id + '">Was wird eingetragen?</label><textarea id="g-hint-' + g.id + '" rows="2" onchange="TO.gameText(\'' + g.id + '\', \'hint\', this.value)">' + esc(g.hint) + '</textarea></div></div></div>';
+    });
+    html += '</div><div class="card"><h2>Spieler:innen</h2><p class="muted">Alle melden sich selbst an. Hier kannst du Tippfehler korrigieren und Doppelte entfernen.</p>';
+    html += state.players.slice().sort(function (a, b) { return a.name.localeCompare(b.name, "de"); }).map(function (p) {
+      var ck = "del" + p.id;
+      return '<div class="player-row"><input type="text" id="pn-' + esc(p.id) + '" value="' + esc(p.name) + '" onchange="TO.rename(\'' + esc(p.id) + '\', this.value)">' +
+        (ui.confirm === ck
+          ? '<button class="btn btn-danger" onclick="TO.remove(\'' + esc(p.id) + '\')">Löschen</button><button class="btn" onclick="TO.set(\'confirm\', \'\')">Nein</button>'
+          : '<button class="icon-btn" onclick="TO.set(\'confirm\', \'' + esc(ck) + '\')" aria-label="' + esc(p.name) + ' entfernen">✕</button>') + '</div>';
+    }).join('') + (state.players.length ? '' : '<p class="muted">Noch niemand angemeldet.</p>') + '</div>';
+    return html;
+    function field(label, id, val, key) {
+      return '<div><label class="field-label" for="' + id + '">' + label + '</label><input type="text" id="' + id + '" value="' + esc(val || "") + '" onchange="TO.eventField(\'' + key + '\', this.value)"></div>';
+    }
+  }
+
+  // ---------- admin calls ----------
+  function adminCall(body) {
+    body.code = adminCode;
+    ui.busy = true;
+    return api("/api/admin", body).then(function (r) {
+      ui.busy = false; ui.saveMsg = ""; applyState(r.state); render();
+    }).catch(function (e) {
+      ui.busy = false;
+      if (e.code === "wrong_code") { TO.logout(); ui.gateMode = "admin"; ui.gateError = "Der Admin-Code hat sich geändert. Bitte neu entsperren."; render(); return; }
+      ui.saveMsg = e.message || "Speichern hat nicht geklappt."; render();
+    });
+  }
+
+  // ---------- actions ----------
+  var TO = window.TO = {
+    set: function (k, v, rerender) { ui[k] = v; if (k === "confirm" || rerender) render(); },
+    gate: function (m) { ui.gateMode = m; ui.gateError = ""; render(); },
+    submitCode: function () {
+      var code = ui.codeInput.trim();
+      if (!code) { ui.gateError = "Bitte Code eingeben."; render(); return; }
+      ui.busy = true; ui.gateError = ""; render();
+      api("/api/admin", { action: "login", code: code }).then(function () {
+        adminCode = code; lsSet("to_admin_code", code); lsDel("to_player_id");
+        role = "admin"; currentPlayerId = null; ui.busy = false; ui.codeInput = ""; render();
+      }).catch(function (e) {
+        ui.busy = false; ui.gateError = e.code === "wrong_code" ? "Der Code stimmt nicht." : "Prüfung fehlgeschlagen. Bitte noch einmal versuchen."; render();
+      });
+    },
+    pick: function (id) { role = "player"; currentPlayerId = id; lsSet("to_player_id", id); render(); window.scrollTo(0, 0); },
+    register: function () {
+      var first = ui.gateFirst.trim(), last = ui.gateLast.trim();
+      if (!first || !last) { ui.gateError = "Bitte Vor- und Nachnamen eingeben."; render(); return; }
+      ui.busy = true; ui.gateError = ""; render();
+      api("/api/register", { firstName: first, lastName: last }).then(function (r) {
+        applyState(r.state); ui.busy = false; TO.pick(r.playerId);
+      }).catch(function () {
+        ui.busy = false; ui.gateError = "Anmeldung hat nicht geklappt. Bitte noch einmal versuchen."; render();
+      });
+    },
+    logout: function () { role = null; currentPlayerId = null; adminCode = ""; lsDel("to_player_id"); lsDel("to_admin_code"); ui.gateMode = "register"; render(); },
+    tab: function (t) { ui.tab = t; ui.confirm = ""; ssSet("to_tab", t); render(); window.scrollTo(0, 0); },
+    toggleGame: function (id) { ui.openGame = ui.openGame === id ? "" : id; ssSet("to_game", ui.openGame); render(); },
+    entry: function (pid, gid, raw) {
+      var g = gameById(gid), key = pid + ":" + gid;
+      if (!g || (g.locked && role !== "admin")) return;
+      ui.drafts[key] = raw;
+      var s = String(raw).trim().replace(",", ".");
+      if (s === "") { delete ui.errors[key]; queueSave(pid, gid, null); render(); return; }
+      var n = Number(s);
+      if (!isFinite(n) || n < g.min || n > g.max) {
+        ui.errors[key] = "Bitte eine Zahl von " + g.min + " bis " + g.max + " eintragen.";
+        if (timers[key]) { clearTimeout(timers[key]); delete timers[key]; }
+        render(); return;
+      }
+      delete ui.errors[key];
+      g.entries[pid] = n;
+      queueSave(pid, gid, n);
+      render();
+    },
+    foul: function (pid, gid) {
+      var g = gameById(gid); if (!g || (g.locked && role !== "admin")) return;
+      var key = pid + ":" + gid;
+      var next = resultOf(g, pid) === "foul" ? null : "foul";
+      delete ui.drafts[key]; delete ui.errors[key];
+      if (next) g.entries[pid] = "foul"; else delete g.entries[pid];
+      queueSave(pid, gid, next);
+      render();
+    },
+    lock: function (gid) { var g = gameById(gid); if (g) adminCall({ action: "game", gameId: gid, locked: !g.locked }); },
+    gameText: function (gid, field, v) { var b = { action: "game", gameId: gid }; b[field] = v; adminCall(b); },
+    eventField: function (k, v) { var b = { action: "save-event" }; b[k] = v; adminCall(b); },
+    newCode: function (v) {
+      v = String(v).trim(); if (!v) return;
+      var old = adminCode;
+      adminCall({ action: "save-event", adminCode: v }).then(function () {
+        if (!ui.saveMsg && role === "admin") { adminCode = v; lsSet("to_admin_code", v); ui.saveMsg = "Admin-Code geändert. Gib den neuen Code an die anderen Admins weiter."; render(); }
+        else adminCode = adminCode || old;
+      });
+    },
+    rename: function (pid, v) { var name = String(v).replace(/\s+/g, " ").trim(); if (name) adminCall({ action: "player", playerId: pid, name: name }); },
+    remove: function (pid) { ui.confirm = ""; adminCall({ action: "player", playerId: pid, remove: true }); }
+  };
+
+  render();
+  load();
 })();
 </script>
 </body>

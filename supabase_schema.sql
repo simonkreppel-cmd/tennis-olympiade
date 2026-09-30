@@ -161,3 +161,15 @@ $$;
 
 grant execute on function check_admin_code(text) to anon, authenticated;
 grant execute on function admin_save_setup(text, text, text, text, text, jsonb, jsonb) to anon, authenticated;
+
+-- ---------- 30.09.2026: neue Spiele, Regeln, Grenzen, Foul, Abschließen ----------
+alter table games add column if not exists rules text not null default '';
+alter table games add column if not exists hint text not null default '';
+alter table games add column if not exists plan text not null default '';
+alter table games add column if not exists min_value numeric not null default 0;
+alter table games add column if not exists max_value numeric not null default 1000;
+alter table games add column if not exists allow_foul boolean not null default false;
+alter table games add column if not exists locked boolean not null default false;
+alter table entries add column if not exists is_foul boolean not null default false;
+-- admin_set_game(code, game_id, locked, rules, hint) und admin_player(code, player_id, name, remove):
+-- SECURITY DEFINER, prüfen den Admin-Code selbst (bereits in der Datenbank angelegt).
